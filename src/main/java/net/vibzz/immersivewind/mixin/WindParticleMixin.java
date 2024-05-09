@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.vibzz.immersivewind.WindManager;
@@ -32,13 +33,18 @@ public abstract class WindParticleMixin {
 			BlockPos pos = new BlockPos((int) checkPosition.x, (int) checkPosition.y, (int) checkPosition.z);
 			BlockState state = world.getBlockState(pos);
 
-			if (state.isSolidBlock(world, pos) || state.getFluidState().getFluid() == Fluids.WATER || state.getFluidState().getFluid() == Fluids.LAVA) {
+			if (state.isSolidBlock(world, pos) ||
+					state.getFluidState().getFluid() == Fluids.WATER ||
+					state.getFluidState().getFluid() == Fluids.LAVA ||
+					state.isOf(Blocks.GLASS) ||
+					state.isOf(Blocks.OAK_LEAVES) ||
+					state.isOf(Blocks.OAK_FENCE) ||
+					state.isOf(Blocks.IRON_BARS)) {
 				return false;
 			}
 		}
 		return true;
 	}
-
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private double modifyDx(double dx) {
