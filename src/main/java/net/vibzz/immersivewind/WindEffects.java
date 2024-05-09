@@ -7,7 +7,7 @@ import net.minecraft.particle.ParticleTypes;
 import java.util.Random;
 import net.minecraft.world.World;
 import net.minecraft.registry.Registry;
-import net.minecraft.particle.DefaultParticleType
+import net.minecraft.particle.DefaultParticleType;
 
 public class WindEffects implements ClientModInitializer {
     private static final Random random = new Random();
