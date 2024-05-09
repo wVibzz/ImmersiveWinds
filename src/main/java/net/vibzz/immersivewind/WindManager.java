@@ -97,8 +97,8 @@ public class WindManager {
     }
 
     private static int calculateNewWindStrength(World world) {
-        // Wind strength is calculated to follow this scale: "https://www.weather.gov/pqr/wind" up to 45 or 8/Gale
-        // Its not going to be a perfect 1:1
+        // Wind strength is calculated to follow this scale: "https://www.weather.gov/pqr/wind" up to 45mph or 8/Gale
+        // Its not really a perfect 1:1
         if (world.isThundering()) {
             return random.nextInt(13) + 33; // 33 -> 45
         } else if (world.isRaining()) {

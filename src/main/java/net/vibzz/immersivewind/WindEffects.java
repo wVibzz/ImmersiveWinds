@@ -13,7 +13,7 @@ public class WindEffects implements ClientModInitializer {
     private static final Random random = new Random();
     private static long lastSpawnTime = -1;
     private static final long SPAWN_INTERVAL_TICKS = 5; // corresponds to 1 second if 1 tick = 50 ms
-    private static final double SPREAD_RADIUS = 40.0;
+    private static final double SPREAD_RADIUS = 40.0; //Particle Spread
 
     @Override
     public void onInitializeClient() {
@@ -75,11 +75,11 @@ public class WindEffects implements ClientModInitializer {
 
 
     private static int mapWindStrengthToParticleCount(int windStrength) {
-        return windStrength * 20; // Example scaling for particle count based on wind strength
+        return windStrength * 20; // Scaling for particle count based on wind strength
     }
 
     private static double mapWindStrengthToSpeed(int windStrength) {
-        // Simple linear mapping of wind strength to particle speed
+        // Linear mapping of wind strength to particle speed
         return windStrength * 0.1;
     }
 }
