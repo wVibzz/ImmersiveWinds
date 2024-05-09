@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "immersive-high-winds",
+	"version": "${version}",
+	"name": "Immersive Winds",
+	"description": "Immersive wind hell yeah",
+	"authors": [
+		"Vibzz"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.vibzz.immersivewind.WindMod"
+		],
+		"client": [
+			"net.vibzz.immersivewind.WindEffects"
+		]
+	},
+	"mixins": [
+		"immersive-winds.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
