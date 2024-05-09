@@ -13,8 +13,8 @@ public class ModSounds {
 
     // Static initializer block to register sound events
     static {
-        Registry.register(Registries.SOUND_EVENT, new Identifier("windmod", "wind_weak"), WIND_WEAK);
-        Registry.register(Registries.SOUND_EVENT, new Identifier("windmod", "wind_medium"), WIND_MEDIUM);
-        Registry.register(Registries.SOUND_EVENT, new Identifier("windmod", "wind_strong"), WIND_STRONG);
+        //Registry.register(Registries.SOUND_EVENT, new Identifier("windmod", "wind_weak"), WIND_WEAK);
+        //Registry.register(Registries.SOUND_EVENT, new Identifier("windmod", "wind_medium"), WIND_MEDIUM);
+        //Registry.register(Registries.SOUND_EVENT, new Identifier("windmod", "wind_strong"), WIND_STRONG);
     }
 }

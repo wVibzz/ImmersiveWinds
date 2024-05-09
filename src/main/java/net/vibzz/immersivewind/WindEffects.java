@@ -1,28 +1,24 @@
 package net.vibzz.immersivewind;
 
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.particle.*; // Grabs all particles
 import net.minecraft.world.World;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleType;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.registry.Registries;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import java.util.Random;
-import net.minecraft.util.Identifier;
 
 public class WindEffects implements ClientModInitializer {
     private static final Random random = new Random();
     private static long lastSpawnTime = -1;
-    private static final long SPAWN_INTERVAL_TICKS = 5; // corresponds to 1 second if 1 tick = 50 ms
-    private static final double SPREAD_RADIUS = 40.0; //Particle Spread
-    private static Object wind_wisp;
+    private static final long SPAWN_INTERVAL_TICKS = 2; // Corresponds to 100 ms
+    private static final double SPREAD_RADIUS = 100.0; // Increased particle spread
 
     @Override
     public void onInitializeClient() {
         registerWindEffects();
-        ModParticles.registerParticles();
+        ParticleFactoryRegistry.getInstance().register(WindMod.WIND_WISP, AshParticle.Factory::new);
     }
 
     public static void registerWindEffects() {
@@ -36,17 +32,9 @@ public class WindEffects implements ClientModInitializer {
 
     private static void handleVisualEffects(World world) {
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastSpawnTime >= SPAWN_INTERVAL_TICKS * 50) { // Ensure there's a gap between spawns
+        if (currentTime - lastSpawnTime >= SPAWN_INTERVAL_TICKS * 50) { // Adjusted gap between spawns
             spawnWindParticles(world);
             lastSpawnTime = currentTime;
-        }
-    }
-
-    public class ModParticles {
-        public static final DefaultParticleType WIND_WISP = new ParticleType(true);
-
-        public static void registerParticles() {
-            Registry.register(Registries.PARTICLE_TYPE, new Identifier("windmod", "wisp_particle"), WIND_WISP);
         }
     }
 
@@ -66,13 +54,13 @@ public class WindEffects implements ClientModInitializer {
             double motionX = Math.cos(Math.toRadians(windDirection)) * mapWindStrengthToSpeed(windStrength);
             double motionZ = Math.sin(Math.toRadians(windDirection)) * mapWindStrengthToSpeed(windStrength);
 
-            mc.world.addParticle(ModParticles.WIND_WISP, posX, posY, posZ, 0.0, 0.0, 0.0);
+            mc.world.addParticle(WindMod.WIND_WISP, posX, posY, posZ, motionX, 0.0, motionZ);
         }
     }
 
-
     private static int mapWindStrengthToParticleCount(int windStrength) {
-        return windStrength * 20; // Scaling for particle count based on wind strength
+        // Reduce the number of particles spawned
+        return Math.max(1, windStrength * 5); // Reduced scaling factor
     }
 
     private static double mapWindStrengthToSpeed(int windStrength) {
