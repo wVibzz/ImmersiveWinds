@@ -25,8 +25,8 @@ public class WindManager {
 
     public static void initialize() {
         currentWindDirection = 0.0f; // Set initial direction to North
-        currentWindStrength.set(1);
-        System.out.println("Wind initialized to NORTH with strength 1");
+        currentWindStrength.set(1);  // Set initial Strength to 1
+        System.out.println("Wind is initialized");
     }
 
     public static void updateIfNeeded(World world) {
@@ -97,12 +97,14 @@ public class WindManager {
     }
 
     private static int calculateNewWindStrength(World world) {
+        // Wind strength is calculated to follow this scale: "https://www.weather.gov/pqr/wind" up to 45 or 8/Gale
+        // Its not going to be a perfect 1:1
         if (world.isThundering()) {
-            return random.nextInt(13) + 33;
+            return random.nextInt(13) + 33; // 33 -> 45
         } else if (world.isRaining()) {
-            return random.nextInt(20) + 14;
+            return random.nextInt(20) + 14; // 14 -> 33
         } else {
-            return random.nextInt(12) + 1;
+            return random.nextInt(12) + 1;  // 1 -> 11
         }
     }
 

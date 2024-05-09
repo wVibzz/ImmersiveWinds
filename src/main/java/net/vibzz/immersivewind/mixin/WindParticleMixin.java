@@ -40,6 +40,7 @@ public abstract class WindParticleMixin {
 					state.isOf(Blocks.OAK_LEAVES) ||
 					state.isOf(Blocks.OAK_FENCE) ||
 					state.isOf(Blocks.IRON_BARS)) {
+					//More blocks when I want to
 				return false;
 			}
 		}
@@ -49,6 +50,7 @@ public abstract class WindParticleMixin {
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private double modifyDx(double dx) {
 		Particle self = (Particle) (Object) this;
+		//Unreachable Code but still reaches it?
 		Vec3d windEffect = calculateWindEffect();
 		Vec3d particlePos = new Vec3d(this.x, this.y, this.z);
 		Vec3d windDirection = new Vec3d(Math.cos(Math.toRadians(WindManager.getWindDirection())), 0, Math.sin(Math.toRadians(WindManager.getWindDirection())));
@@ -61,12 +63,13 @@ public abstract class WindParticleMixin {
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 1, argsOnly = true)
 	private double modifyDy(double dy) {
-		return dy;  // Assuming wind does not affect vertical movement
+		return dy;  // Wind won't affect vertical movement but here code is here if wanted
 	}
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 2, argsOnly = true)
 	private double modifyDz(double dz) {
 		Particle self = (Particle) (Object) this;
+		//Unreachable Code but still reaches it?
 		Vec3d windEffect = calculateWindEffect();
 		Vec3d particlePos = new Vec3d(this.x, this.y, this.z);
 		Vec3d windDirection = new Vec3d(Math.cos(Math.toRadians(WindManager.getWindDirection())), 0, Math.sin(Math.toRadians(WindManager.getWindDirection())));
