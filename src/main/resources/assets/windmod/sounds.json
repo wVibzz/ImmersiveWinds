@@ -1,0 +1,26 @@
+{
+  "wind.weak": {
+    "sounds": [
+      {
+        "name": "immersivewind:wind_weak",
+        "stream": true
+      }
+    ]
+  },
+  "wind.medium": {
+    "sounds": [
+      {
+        "name": "immersivewind:wind_medium",
+        "stream": true
+      }
+    ]
+  },
+  "wind.strong": {
+    "sounds": [
+      {
+        "name": "immersivewind:wind_strong",
+        "stream": true
+      }
+    ]
+  }
+}
