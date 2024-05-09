@@ -1,24 +1,28 @@
 package net.vibzz.immersivewind;
-import net.vibzz.immersivewind.ModSounds;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.world.World;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleType;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.registry.Registries;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.particle.ParticleTypes;
 import java.util.Random;
-import net.minecraft.world.World;
-import net.minecraft.registry.Registry;
-import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.util.Identifier;
 
 public class WindEffects implements ClientModInitializer {
     private static final Random random = new Random();
     private static long lastSpawnTime = -1;
     private static final long SPAWN_INTERVAL_TICKS = 5; // corresponds to 1 second if 1 tick = 50 ms
     private static final double SPREAD_RADIUS = 40.0; //Particle Spread
+    private static Object wind_wisp;
 
     @Override
     public void onInitializeClient() {
         registerWindEffects();
-        ModSounds.registerSounds();
+        ModParticles.registerParticles();
     }
 
     public static void registerWindEffects() {
@@ -34,20 +38,15 @@ public class WindEffects implements ClientModInitializer {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastSpawnTime >= SPAWN_INTERVAL_TICKS * 50) { // Ensure there's a gap between spawns
             spawnWindParticles(world);
-            playWindSound(world); // Play wind sound based on current conditions
             lastSpawnTime = currentTime;
         }
     }
 
-    private static void playWindSound(World world) {
-        MinecraftClient mc = MinecraftClient.getInstance();
-        float windStrength = WindManager.getWindStrength();
-        if (windStrength <= 10) {
-            mc.player.playSound(ModSounds.WIND_WEAK, 1.0F, 1.0F);
-        } else if (windStrength <= 20) {
-            mc.player.playSound(ModSounds.WIND_MEDIUM, 1.0F, 1.0F);
-        } else {
-            mc.player.playSound(ModSounds.WIND_STRONG, 1.0F, 1.0F);
+    public class ModParticles {
+        public static final DefaultParticleType WIND_WISP = new ParticleType(true);
+
+        public static void registerParticles() {
+            Registry.register(Registries.PARTICLE_TYPE, new Identifier("windmod", "wisp_particle"), WIND_WISP);
         }
     }
 
@@ -59,8 +58,6 @@ public class WindEffects implements ClientModInitializer {
         int windStrength = WindManager.getWindStrength();
         int particleCount = mapWindStrengthToParticleCount(windStrength);
 
-        DefaultParticleType CUSTOM_WIND_PARTICLE = Registry.PARTICLE_TYPE.get(new Identifier("windmod", "custom_wind"));
-
         for (int i = 0; i < particleCount; i++) {
             double posX = mc.player.getX() + (random.nextDouble() * 2 - 1) * SPREAD_RADIUS;
             double posY = mc.player.getEyeY() + (random.nextDouble() * 2 - 1) * SPREAD_RADIUS;
@@ -69,7 +66,7 @@ public class WindEffects implements ClientModInitializer {
             double motionX = Math.cos(Math.toRadians(windDirection)) * mapWindStrengthToSpeed(windStrength);
             double motionZ = Math.sin(Math.toRadians(windDirection)) * mapWindStrengthToSpeed(windStrength);
 
-            mc.world.addParticle(CUSTOM_WIND_PARTICLE, false, posX, posY, posZ, motionX, 0, motionZ);
+            mc.world.addParticle(ModParticles.WIND_WISP, posX, posY, posZ, 0.0, 0.0, 0.0);
         }
     }
 
