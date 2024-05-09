@@ -6,6 +6,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.particle.ParticleTypes;
 import java.util.Random;
 import net.minecraft.world.World;
+import net.minecraft.registry.Registry;
+import net.minecraft.particle.DefaultParticleType
 
 public class WindEffects implements ClientModInitializer {
     private static final Random random = new Random();
@@ -57,6 +59,8 @@ public class WindEffects implements ClientModInitializer {
         int windStrength = WindManager.getWindStrength();
         int particleCount = mapWindStrengthToParticleCount(windStrength);
 
+        DefaultParticleType CUSTOM_WIND_PARTICLE = Registry.PARTICLE_TYPE.get(new Identifier("windmod", "custom_wind"));
+
         for (int i = 0; i < particleCount; i++) {
             double posX = mc.player.getX() + (random.nextDouble() * 2 - 1) * SPREAD_RADIUS;
             double posY = mc.player.getEyeY() + (random.nextDouble() * 2 - 1) * SPREAD_RADIUS;
@@ -65,9 +69,10 @@ public class WindEffects implements ClientModInitializer {
             double motionX = Math.cos(Math.toRadians(windDirection)) * mapWindStrengthToSpeed(windStrength);
             double motionZ = Math.sin(Math.toRadians(windDirection)) * mapWindStrengthToSpeed(windStrength);
 
-            mc.world.addParticle(ParticleTypes.WHITE_ASH, posX, posY, posZ, motionX, 0, motionZ);
+            mc.world.addParticle(CUSTOM_WIND_PARTICLE, false, posX, posY, posZ, motionX, 0, motionZ);
         }
     }
+
 
     private static int mapWindStrengthToParticleCount(int windStrength) {
         return windStrength * 20; // Example scaling for particle count based on wind strength
