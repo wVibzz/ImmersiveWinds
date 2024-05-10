@@ -3,7 +3,7 @@
 	"id": "immersive-high-winds",
 	"version": "${version}",
 	"name": "Immersive Winds",
-	"description": "Immersive wind hell yeah",
+	"description": "Adds Immersive Winds to your particles.",
 	"authors": [
 		"Vibzz"
 	],

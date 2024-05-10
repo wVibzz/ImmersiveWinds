@@ -25,6 +25,7 @@ public class ParticleConfig {
         if (inputStream != null) {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
                 excludedParticles.addAll(reader.lines().map(String::trim).collect(Collectors.toSet()));
+                System.out.println("Loaded excluded particles: " + excludedParticles);  // Debug print
             }
         } else {
             System.err.println("Excluded particles config file not found.");

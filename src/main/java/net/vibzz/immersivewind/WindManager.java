@@ -1,6 +1,7 @@
 package net.vibzz.immersivewind;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,12 +17,12 @@ public class WindManager {
 
     public static final long MIN_UPDATE_INTERVAL = 1000; // Minimum interval between updates in milliseconds
     public static long lastWindChangeTime = 0;
-    public static final long WIND_CHANGE_COOLDOWN = 10000; // Cooldown period in milliseconds (10 seconds)
-    private static final float MAX_DIRECTION_CHANGE_PER_TICK = 5.0f; // Max degrees to change per tick
+    public static final long WIND_CHANGE_COOLDOWN = 12000; // Cooldown period in milliseconds (10 seconds)
+    private static final float MAX_DIRECTION_CHANGE_PER_TICK = 6.0f; // Max degrees to change per tick
     private static final float MAX_STRENGTH_CHANGE_PER_TICK = 1f; // Max strength to change per tick
 
-    // Store previous wind directions with their timestamps
-    private static List<WindHistoryEntry> windHistory = new ArrayList<>();
+    private static final LinkedList<WindHistoryEntry> windHistory = new LinkedList<>();
+    private static final int MAX_HISTORY_SIZE = 10; // Store up to 100 history entries
 
     public static void initialize() {
         currentWindDirection = 0.0f; // Set initial direction to North
@@ -50,7 +51,7 @@ public class WindManager {
             return; // Skip the wind change because the cooldown has not elapsed.
         }
         // Record the change of wind direction with its timestamp
-        windHistory.add(new WindHistoryEntry(currentTime, currentWindDirection));
+        addWindHistoryEntry(currentTime, currentWindDirection);
 
         targetWindDirection = direction;
         targetWindStrength.set(strength);
@@ -89,6 +90,17 @@ public class WindManager {
         return currentWindStrength.get();
     }
 
+    public static void addWindHistoryEntry(long timestamp, float windDirection) {
+        if (windHistory.size() >= MAX_HISTORY_SIZE) {
+            windHistory.removeFirst(); // Remove the oldest entry to maintain size
+        }
+        windHistory.addLast(new WindHistoryEntry(timestamp, windDirection));
+    }
+
+    public static List<WindHistoryEntry> getWindHistory() {
+        return new ArrayList<>(windHistory); // Return a copy of the history
+    }
+
     private static float calculateNewWindDirection(World world) {
         float change = random.nextFloat() * 30 - 15; // This creates a range from -15 to +15
         float newDirection = currentWindDirection + change;
@@ -100,15 +112,14 @@ public class WindManager {
         // Wind strength is calculated to follow this scale: "https://www.weather.gov/pqr/wind" up to 45mph or 8/Gale
         // Its not really a perfect 1:1
         if (world.isThundering()) {
-            return random.nextInt(13) + 33; // 33 -> 45
+            return random.nextInt(13) + 32; // 32 -> 44
         } else if (world.isRaining()) {
-            return random.nextInt(20) + 14; // 14 -> 33
+            return random.nextInt(20) + 12; // 12 -> 31
         } else {
-            return random.nextInt(12) + 1;  // 1 -> 11
+            return random.nextInt(10) + 1;  // 1 -> 11
         }
     }
 
-    // Simple class to store wind history entries
     private static class WindHistoryEntry {
         long timestamp;
         float windDirection;
