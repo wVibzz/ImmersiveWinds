@@ -26,7 +26,7 @@ public abstract class WindParticleMixin {
 	@Shadow protected ClientWorld world;
 
 	@Unique
-	// Checks if particles are in fluids or if there is a block that would block 'wind'
+	// Checks if particles are in fluids or if there is a block
 	private boolean isUnobstructed(Vec3d particlePosition, Vec3d windDirection) {
 		Vec3d checkPosition = particlePosition;
 		for (int i = 0; i < 2; i++) { //for testing blocks wind up to 2 blocks
