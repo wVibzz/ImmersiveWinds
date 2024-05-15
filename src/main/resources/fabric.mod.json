@@ -1,9 +1,9 @@
 {
 	"schemaVersion": 1,
 	"id": "immersive-high-winds",
-	"version": "0.3",
+	"version": "0.4",
 	"name": "Immersive Winds",
-	"description": "Adds Immersive Winds to your particles.",
+	"description": "Adds Wind to your world.",
 	"authors": [
 		"Vibzz"
 	],
@@ -26,10 +26,10 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.15.11",
-		"minecraft": "1.20.1",
+		"minecraft": ">=1.19.4",
 		"java": ">=17",
 		"fabric-api": "*",
-		"particlerain": ">=2.0.8"
+		"particlerain": "2.0.8"
 	},
 	"suggests": {
 		"another-mod": "*"
