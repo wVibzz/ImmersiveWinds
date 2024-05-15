@@ -17,15 +17,11 @@ public class WindMod implements ModInitializer {
 		WindManager.initialize();
 
 		// Register server lifecycle events
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			// Listen for world tick events
-			WorldTickCallback.EVENT.register(this::onWorldTick);
-		});
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> WorldTickCallback.EVENT.register(this::onWorldTick));
 	}
 
 	public void onWorldTick(World world) {
 		// Update wind based on weather in each world
-		WindManager.updateWindBasedOnWeather(world);
+		WindManager.updateIfNeeded(world);
 	}
-
 }
