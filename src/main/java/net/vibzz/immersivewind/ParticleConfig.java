@@ -31,8 +31,4 @@ public class ParticleConfig {
             System.err.println("Excluded particles config file not found.");
         }
     }
-
-    public static boolean isExcluded(String particleName) {
-        return excludedParticles.contains(particleName);
-    }
 }
