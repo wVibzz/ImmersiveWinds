@@ -29,7 +29,6 @@
 		"minecraft": ">=1.19.4",
 		"java": ">=17",
 		"fabric-api": "*",
-		"particlerain": "2.0.8"
 	},
 	"suggests": {
 		"another-mod": "*"
