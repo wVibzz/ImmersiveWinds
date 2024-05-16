@@ -101,7 +101,7 @@ public class WindManager {
     }
 
     public static void addWindHistoryEntry(long timestamp, float windDirection) {
-        if (windHistory.size() >= ) {
+        if (windHistory.size() >= MAX_HISTORY_SIZE) {
             windHistory.removeFirst(); // Remove the oldest entry to maintain size
         }
         windHistory.addLast(new WindHistoryEntry(timestamp, windDirection));
