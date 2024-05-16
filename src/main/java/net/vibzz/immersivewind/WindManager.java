@@ -16,7 +16,6 @@ public class WindManager {
     public static final Random random = new Random();
 
     public static long lastWindChangeTime = 0;
-    public static final long WIND_CHANGE_COOLDOWN = 12000; // Cooldown period in milliseconds (10 seconds)
     private static final float MAX_DIRECTION_CHANGE_PER_TICK = 6.0f; // Max degrees to change per tick
     private static final float MAX_STRENGTH_CHANGE_PER_TICK = 1f; // Max strength to change per tick
 
@@ -32,7 +31,7 @@ public class WindManager {
     }
 
     private static int getCurrentWeatherState(World world) {
-        if (world.isThundering()) {
+        if (world.isThundering()) { // Not the best implementation, but it works sequentially and it's cool
             return 2;
         } else if (world.isRaining()) {
             return 1;
@@ -41,10 +40,10 @@ public class WindManager {
         }
     }
 
-    public static void updateIfNeeded(World world) {
-        if (previousWeatherState != getCurrentWeatherState(world)) {
+    public static void updateWeather(World world) {
+        if (previousWeatherState != getCurrentWeatherState(world)) { // Check for the change in weather
             updateWindBasedOnWeather(world);
-            previousWeatherState = getCurrentWeatherState(world);
+            previousWeatherState = getCurrentWeatherState(world); // Remember previous state
         }
         interpolateWind();  // Ensure wind direction and strength are being interpolated every update
     }
@@ -56,10 +55,6 @@ public class WindManager {
     }
 
     public static void setTargetWind(float direction, int strength) {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastWindChangeTime < WIND_CHANGE_COOLDOWN) {
-            return; // Skip the wind change because the cooldown has not elapsed.
-        }
         // Record the change of wind direction with its timestamp
         addWindHistoryEntry(currentTime, currentWindDirection);
 
