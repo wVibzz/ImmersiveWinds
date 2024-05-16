@@ -31,7 +31,7 @@ public class WindManager {
         System.out.println("Wind is initialized");
     }
 
-    private static int getCurrentWeatherState() {
+    private static int getCurrentWeatherState(World world) {
         if (world.isThundering()) {
             return 2;
         } else if (world.isRaining()) {
@@ -42,9 +42,9 @@ public class WindManager {
     }
 
     public static void updateIfNeeded(World world) {
-        if (previousWeatherState != getCurrentWeatherState()) {
+        if (previousWeatherState != getCurrentWeatherState(world)) {
             updateWindBasedOnWeather(world);
-            previousWeatherState = getCurrentWeatherState();
+            previousWeatherState = getCurrentWeatherState(world);
         }
         interpolateWind();  // Ensure wind direction and strength are being interpolated every update
     }
