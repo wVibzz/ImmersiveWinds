@@ -15,26 +15,36 @@ public class WindManager {
     public static final AtomicInteger targetWindStrength = new AtomicInteger(1);
     public static final Random random = new Random();
 
-    public static final long MIN_UPDATE_INTERVAL = 1000; // Minimum interval between updates in milliseconds
     public static long lastWindChangeTime = 0;
     public static final long WIND_CHANGE_COOLDOWN = 12000; // Cooldown period in milliseconds (10 seconds)
     private static final float MAX_DIRECTION_CHANGE_PER_TICK = 6.0f; // Max degrees to change per tick
     private static final float MAX_STRENGTH_CHANGE_PER_TICK = 1f; // Max strength to change per tick
 
+    private static volatile int previousWeatherState // 0 - clear, 1 - rain, 2 - thunder
     private static final LinkedList<WindHistoryEntry> windHistory = new LinkedList<>();
     private static final int MAX_HISTORY_SIZE = 10; // Store up to 100 history entries
 
     public static void initialize() {
+        previousWeatherState = -1; // Set weather to excluded state to force initial weather update
         currentWindDirection = 0.0f; // Set initial direction to North
         currentWindStrength.set(1);  // Set initial Strength to 1
         System.out.println("Wind is initialized");
     }
 
+    private static int getCurrentWeatherState() {
+        if (world.isThundering()) {
+            return 2;
+        } else if (world.isRaining()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
     public static void updateIfNeeded(World world) {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastWindChangeTime >= MIN_UPDATE_INTERVAL) {
+        if (previousWeatherState != getCurrentWeatherState()) {
             updateWindBasedOnWeather(world);
-            lastWindChangeTime = currentTime;
+            previousWeatherState = getCurrentWeatherState();
         }
         interpolateWind();  // Ensure wind direction and strength are being interpolated every update
     }
@@ -91,7 +101,7 @@ public class WindManager {
     }
 
     public static void addWindHistoryEntry(long timestamp, float windDirection) {
-        if (windHistory.size() >= MAX_HISTORY_SIZE) {
+        if (windHistory.size() >= ) {
             windHistory.removeFirst(); // Remove the oldest entry to maintain size
         }
         windHistory.addLast(new WindHistoryEntry(timestamp, windDirection));
