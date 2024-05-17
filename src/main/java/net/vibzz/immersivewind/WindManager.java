@@ -15,26 +15,35 @@ public class WindManager {
     public static final AtomicInteger targetWindStrength = new AtomicInteger(1);
     public static final Random random = new Random();
 
-    public static final long MIN_UPDATE_INTERVAL = 1000; // Minimum interval between updates in milliseconds
     public static long lastWindChangeTime = 0;
-    public static final long WIND_CHANGE_COOLDOWN = 12000; // Cooldown period in milliseconds (10 seconds)
     private static final float MAX_DIRECTION_CHANGE_PER_TICK = 6.0f; // Max degrees to change per tick
     private static final float MAX_STRENGTH_CHANGE_PER_TICK = 1f; // Max strength to change per tick
 
+    private static volatile int previousWeatherState // 0 - clear, 1 - rain, 2 - thunder
     private static final LinkedList<WindHistoryEntry> windHistory = new LinkedList<>();
     private static final int MAX_HISTORY_SIZE = 10; // Store up to 100 history entries
 
     public static void initialize() {
+        previousWeatherState = -1; // Set weather to excluded state to force initial weather update
         currentWindDirection = 0.0f; // Set initial direction to North
         currentWindStrength.set(1);  // Set initial Strength to 1
         System.out.println("Wind is initialized");
     }
 
-    public static void updateIfNeeded(World world) {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastWindChangeTime >= MIN_UPDATE_INTERVAL) {
+    private static int getCurrentWeatherState(World world) {
+        if (world.isThundering()) { // Not the best implementation, but it works sequentially and it's cool
+            return 2;
+        } else if (world.isRaining()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public static void updateWeather(World world) {
+        if (previousWeatherState != getCurrentWeatherState(world)) { // Check for the change in weather
             updateWindBasedOnWeather(world);
-            lastWindChangeTime = currentTime;
+            previousWeatherState = getCurrentWeatherState(world); // Remember previous state
         }
         interpolateWind();  // Ensure wind direction and strength are being interpolated every update
     }
@@ -46,10 +55,6 @@ public class WindManager {
     }
 
     public static void setTargetWind(float direction, int strength) {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastWindChangeTime < WIND_CHANGE_COOLDOWN) {
-            return; // Skip the wind change because the cooldown has not elapsed.
-        }
         // Record the change of wind direction with its timestamp
         addWindHistoryEntry(currentTime, currentWindDirection);
 
