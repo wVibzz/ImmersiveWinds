@@ -27,7 +27,7 @@ public abstract class WindParticleMixin {
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private double modifyDx(double dx) {
-        Vec3d windEffect = calculateWindEffect();
+		Vec3d windEffect = calculateWindEffect();
 		Vec3d particlePos = new Vec3d(this.x, this.y, this.z);
 		Vec3d windDirection = new Vec3d(Math.cos(Math.toRadians(WindManager.getWindDirection())), 0, Math.sin(Math.toRadians(WindManager.getWindDirection())));
 
@@ -40,10 +40,9 @@ public abstract class WindParticleMixin {
 		return dy;  // Return the adjusted dy
 	}
 
-	// Method in Particle class to modify the dz component based on wind influence
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 2, argsOnly = true)
 	private double modifyDz(double dz) {
-        Vec3d windEffect = calculateWindEffect(); // Ensure this method provides the wind vector based on wind direction and strength
+		Vec3d windEffect = calculateWindEffect(); // Ensure this method provides the wind vector based on wind direction and strength
 		Vec3d particlePos = new Vec3d(this.x, this.y, this.z);
 		Vec3d windDirection = new Vec3d(Math.cos(Math.toRadians(WindManager.getWindDirection())), 0, Math.sin(Math.toRadians(WindManager.getWindDirection())));
 
@@ -58,7 +57,7 @@ public abstract class WindParticleMixin {
 
 		for (int i = 1; i <= range; i++) {
 			Vec3d checkPosition = particlePosition.add(invertedWindDirection.multiply(i));
-			BlockPos pos = new BlockPos((int) checkPosition.x, (int) checkPosition.y, (int) checkPosition.z);
+			BlockPos pos = new BlockPos((int) checkPosition.getX(), (int) checkPosition.getY(), (int) checkPosition.getZ());
 			BlockState state = world.getBlockState(pos);
 
 			// If there is any clear path from the direction the wind is coming from, return full wind influence
@@ -66,7 +65,6 @@ public abstract class WindParticleMixin {
 				return 1; // Full influence if wind exposure is confirmed
 			}
 		}
-
 		// If no clear path is found within the range, no wind influence
 		return 0.0;
 	}
@@ -84,12 +82,8 @@ public abstract class WindParticleMixin {
 		double windZ = Math.sin(angleRadians) * WindManager.getWindStrength() * 0.01;
 		Vec3d initialWindEffect = new Vec3d(windX, 0, windZ);
 
-		BlockPos pos = new BlockPos((int) x, (int) y, (int) z);
-		if (checkForWallInteraction(pos)) {
-			return adjustWindFlow(initialWindEffect, pos, windX, windZ);
-		}
-
-		return initialWindEffect;
+		BlockPos pos = new BlockPos((int) this.x, (int) this.y, (int) this.z);
+		return calculateRealisticWindFlow(initialWindEffect, pos);
 	}
 
 	@Unique
@@ -206,12 +200,69 @@ public abstract class WindParticleMixin {
 	@Unique
 	private Vec3d slideWindAlongWall(Vec3d windEffect, Direction wallDirection) {
 		// Depending on the wall's orientation, adjust the wind's direction to slide along the wall
-        return switch (wallDirection) {
-            case NORTH, SOUTH ->
-                    new Vec3d(windEffect.x, windEffect.y, 0); // Eliminate Z-component for North/South walls
-            case EAST, WEST -> new Vec3d(0, windEffect.y, windEffect.z); // Eliminate X-component for East/West walls
-            default -> windEffect; // No adjustment if no clear wall interaction
-        };
+		return switch (wallDirection) {
+			case NORTH, SOUTH -> new Vec3d(windEffect.x, windEffect.y, 0); // Eliminate Z-component for North/South walls
+			case EAST, WEST -> new Vec3d(0, windEffect.y, windEffect.z); // Eliminate X-component for East/West walls
+			default -> windEffect; // No adjustment if no clear wall interaction
+		};
 	}
 
+	@Unique
+	private Vec3d funnelWindAroundStructure(Vec3d windEffect, BlockPos pos) {
+		Direction windDirection = getWindDirection(windEffect.x, windEffect.z);
+		Direction wallDirection = getWallFacingDirection(pos, windDirection);
+		double incidenceAngle = calculateIncidenceAngle(windDirection, wallDirection);
+
+		// Funnel effect: wind accelerates when funneled through narrow spaces
+		if (incidenceAngle >= 45 && incidenceAngle <= 135) {
+			double funnelFactor = 1.0 + (1.0 - Math.cos(Math.toRadians(incidenceAngle))) * 0.5;
+			return windEffect.multiply(funnelFactor);
+		}
+
+		return windEffect;
+	}
+
+	@Unique
+	private boolean isNearTunnel(BlockPos pos) {
+		int airCount = 0;
+		int solidCount = 0;
+
+		// Check surroundings in a 3x3x3 area around the particle
+		for (int dx = -1; dx <= 1; dx++) {
+			for (int dy = -1; dy <= 1; dy++) {
+				for (int dz = -1; dz <= 1; dz++) {
+					BlockPos checkPos = pos.add(dx, dy, dz);
+					BlockState state = world.getBlockState(checkPos);
+
+					if (state.isAir()) {
+						airCount++;
+					} else if (state.isSolidBlock(world, checkPos)) {
+						solidCount++;
+					}
+				}
+			}
+		}
+
+		// Consider it a tunnel if there are significantly more air blocks surrounded by solid blocks
+		return airCount >= 15 && solidCount >= 10;
+	}
+
+	@Unique
+	private Vec3d adjustForTunnelAttraction(Vec3d windEffect, BlockPos pos) {
+		if (isNearTunnel(pos)) {
+			double attractionFactor = 1.5; // Increase wind influence near tunnels
+			return windEffect.multiply(attractionFactor);
+		}
+		return windEffect;
+	}
+
+	@Unique
+	private Vec3d calculateRealisticWindFlow(Vec3d windEffect, BlockPos pos) {
+		// Adjust the wind flow considering both wall interactions and funneling effects
+		if (checkForWallInteraction(pos)) {
+			windEffect = adjustWindFlow(windEffect, pos, windEffect.x, windEffect.z);
+		}
+		windEffect = funnelWindAroundStructure(windEffect, pos);
+		return adjustForTunnelAttraction(windEffect, pos);
+	}
 }
