@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "immersive-high-winds",
-	"version": "0.4",
+	"version": "0.5",
 	"name": "Immersive Winds",
 	"description": "Adds Wind to your world.",
 	"authors": [
