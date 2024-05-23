@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
 import net.vibzz.immersivewind.sound.ModSounds;
 
@@ -30,6 +29,9 @@ public class WindManager {
     private static long lastWindChangeTime = 0; // To track the last wind change time
     private static long windStrengthChangeStartTime = 0; // To track the start time of strength change
     private static int initialWindStrength = 1; // Initial strength before change
+
+    private static long lastSoundPlayTime = 0;
+    private static final long SOUND_PLAY_COOLDOWN = 20000; // Cooldown period in milliseconds (20 seconds)
 
     public static void initialize() {
         previousWeatherState = -1;
@@ -60,6 +62,17 @@ public class WindManager {
             lastWindChangeTime = currentTime; // Reset the wind change timer
         }
         interpolateWind();  // Ensure wind direction and strength are being interpolated every update
+    }
+
+    public static void soundPlayer(World world) {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastSoundPlayTime >= SOUND_PLAY_COOLDOWN) {
+            // Play the sound for all players in the world
+            for (PlayerEntity player : world.getPlayers()) {
+                ModSounds.playWindSound(world, player);
+            }
+            lastSoundPlayTime = currentTime; // Update the last play time
+        }
     }
 
     public static void updateWindBasedOnWeather(World world) {
@@ -154,15 +167,7 @@ public class WindManager {
         }
     }
 
-    private static void playWindSound(World world, PlayerEntity player) {
-        float volume = calculateWindVolume(world);
-        double x = player.getX();
-        double y = player.getY();
-        double z = player.getZ();
-        world.playSound(null, x, y, z, ModSounds.WIND_SOUND, SoundCategory.AMBIENT, volume, 1.0f);
-    }
-
-    private static float calculateWindVolume(World world) {
+    public static float calculateWindVolume(World world) {
         if (world.isThundering()) {
             return 0.7f; // Max volume
         } else if (world.isRaining()) {
