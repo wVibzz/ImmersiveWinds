@@ -60,12 +60,10 @@ public abstract class WindParticleMixin {
 			BlockPos pos = new BlockPos((int) checkPosition.getX(), (int) checkPosition.getY(), (int) checkPosition.getZ());
 			BlockState state = world.getBlockState(pos);
 
-			// If there is any clear path from the direction the wind is coming from, return full wind influence
 			if (state.isAir() || isNonSolidBlock(state)) {
 				return 1; // Full influence if wind exposure is confirmed
 			}
 		}
-		// If no clear path is found within the range, no wind influence
 		return 0.0;
 	}
 
@@ -91,7 +89,7 @@ public abstract class WindParticleMixin {
 		for (Direction dir : Direction.values()) {
 			BlockState state = world.getBlockState(particlePos.offset(dir));
 			if (state.isSolidBlock(world, particlePos.offset(dir))) {
-				return true; // There is a wall interacting with the wind
+				return true;
 			}
 		}
 		return false;
@@ -107,7 +105,6 @@ public abstract class WindParticleMixin {
 		double deflectedWindX = windX * deflectionFactor;
 		double deflectedWindZ = windZ * deflectionFactor;
 
-		// Incorporating randomness to simulate more natural wind behavior
 		deflectedWindX += randomizeDeflection(incidenceAngle);
 		deflectedWindZ += randomizeDeflection(incidenceAngle);
 
@@ -116,7 +113,6 @@ public abstract class WindParticleMixin {
 
 	@Unique
 	private double randomizeDeflection(double incidenceAngle) {
-		// Introducing a small random component based on the angle to simulate chaotic airflow
 		return Math.random() * Math.cos(Math.toRadians(incidenceAngle)) * 0.05;
 	}
 
@@ -128,19 +124,18 @@ public abstract class WindParticleMixin {
 		if (angle > 45 && angle <= 135) return Direction.SOUTH;
 		if (angle > 135 && angle <= 225) return Direction.WEST;
 		if (angle > 225) return Direction.NORTH;
-		return Direction.EAST; // default, should not happen
+		return Direction.EAST;
 	}
 
 	@Unique
 	private Direction getWallFacingDirection(BlockPos pos, Direction windDirection) {
-		// Check which wall the wind is primarily hitting
 		for (Direction dir : Direction.values()) {
 			BlockState state = world.getBlockState(pos.offset(dir));
 			if (state.isSolidBlock(world, pos.offset(dir)) && dir.getAxis().isHorizontal()) {
 				return dir;
 			}
 		}
-		return windDirection; // return windDirection if no wall interaction is dominant
+		return windDirection;
 	}
 
 	@Unique
@@ -149,7 +144,6 @@ public abstract class WindParticleMixin {
 		int wallAngle = directionToAngle(wallDirection);
 		int angleDifference = Math.abs(windAngle - wallAngle);
 
-		// Normalize the angle difference to the range [0, 180]
 		if (angleDifference > 180) {
 			angleDifference = 360 - angleDifference;
 		}
@@ -164,22 +158,21 @@ public abstract class WindParticleMixin {
 			case SOUTH -> 0;
 			case WEST -> 270;
 			case EAST -> 90;
-			default -> 0; // default to South if something goes wrong
+			default -> 0;
 		};
 	}
 
 	@Unique
 	private double calculateDeflectionFactor(double incidenceAngle, double windX, double windZ) {
-		double baseDeflection = 0.01; // base deflection factor
-		double velocityFactor = Math.sqrt(windX * windX + windZ * windZ) * 0.01; // scaling deflection based on velocity
-		double angleFactor = Math.cos(Math.toRadians(incidenceAngle)); // reduce deflection with sharper angles
+		double baseDeflection = 0.01;
+		double velocityFactor = Math.sqrt(windX * windX + windZ * windZ) * 0.01;
+		double angleFactor = Math.cos(Math.toRadians(incidenceAngle));
 		return baseDeflection * angleFactor * velocityFactor;
 	}
 
 	@Unique
 	private boolean checkForLaminarFlow(double incidenceAngle) {
-		// Check if the flow should be laminar based on the angle of incidence
-		return incidenceAngle < 45; // Simplified check for laminar flow condition
+		return incidenceAngle < 45;
 	}
 
 	@Unique
@@ -189,21 +182,18 @@ public abstract class WindParticleMixin {
 		double incidenceAngle = calculateIncidenceAngle(windDirection, wallDirection);
 
 		if (checkForLaminarFlow(incidenceAngle)) {
-			// Laminar flow: wind slides along the wall
 			return slideWindAlongWall(windEffect, wallDirection);
 		} else {
-			// Turbulent flow or deflection
 			return deflectWind(windX, windZ, pos);
 		}
 	}
 
 	@Unique
 	private Vec3d slideWindAlongWall(Vec3d windEffect, Direction wallDirection) {
-		// Depending on the wall's orientation, adjust the wind's direction to slide along the wall
 		return switch (wallDirection) {
-			case NORTH, SOUTH -> new Vec3d(windEffect.x, windEffect.y, 0); // Eliminate Z-component for North/South walls
-			case EAST, WEST -> new Vec3d(0, windEffect.y, windEffect.z); // Eliminate X-component for East/West walls
-			default -> windEffect; // No adjustment if no clear wall interaction
+			case NORTH, SOUTH -> new Vec3d(windEffect.x, windEffect.y, 0);
+			case EAST, WEST -> new Vec3d(0, windEffect.y, windEffect.z);
+			default -> windEffect;
 		};
 	}
 
@@ -213,7 +203,6 @@ public abstract class WindParticleMixin {
 		Direction wallDirection = getWallFacingDirection(pos, windDirection);
 		double incidenceAngle = calculateIncidenceAngle(windDirection, wallDirection);
 
-		// Funnel effect: wind accelerates when funneled through narrow spaces
 		if (incidenceAngle >= 45 && incidenceAngle <= 135) {
 			double funnelFactor = 1.0 + (1.0 - Math.cos(Math.toRadians(incidenceAngle))) * 0.5;
 			return windEffect.multiply(funnelFactor);
@@ -227,7 +216,6 @@ public abstract class WindParticleMixin {
 		int airCount = 0;
 		int solidCount = 0;
 
-		// Check surroundings in a 3x3x3 area around the particle
 		for (int dx = -1; dx <= 1; dx++) {
 			for (int dy = -1; dy <= 1; dy++) {
 				for (int dz = -1; dz <= 1; dz++) {
@@ -243,14 +231,13 @@ public abstract class WindParticleMixin {
 			}
 		}
 
-		// Consider it a tunnel if there are significantly more air blocks surrounded by solid blocks
 		return airCount >= 15 && solidCount >= 10;
 	}
 
 	@Unique
 	private Vec3d adjustForTunnelAttraction(Vec3d windEffect, BlockPos pos) {
 		if (isNearTunnel(pos)) {
-			double attractionFactor = 1.5; // Increase wind influence near tunnels
+			double attractionFactor = 1.5;
 			return windEffect.multiply(attractionFactor);
 		}
 		return windEffect;
@@ -258,7 +245,6 @@ public abstract class WindParticleMixin {
 
 	@Unique
 	private Vec3d calculateRealisticWindFlow(Vec3d windEffect, BlockPos pos) {
-		// Adjust the wind flow considering both wall interactions and funneling effects
 		if (checkForWallInteraction(pos)) {
 			windEffect = adjustWindFlow(windEffect, pos, windEffect.x, windEffect.z);
 		}
