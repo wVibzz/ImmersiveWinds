@@ -1,42 +1,30 @@
 package net.vibzz.immersivewind.sound;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.EntityTrackingSoundInstance;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-import net.vibzz.immersivewind.WindManager;
 import net.vibzz.immersivewind.WindMod;
 
 public class ModSounds {
 
-    public static final SoundEvent WIND_SOUND = registerSoundEvent("wind_sound");
+    public static final SoundEvent WIND_SOUND = registerSoundEvent();
 
-    private  static SoundEvent registerSoundEvent(String name) {
-        Identifier id = new Identifier(WindMod.MOD_ID, name);
+    public static SoundEvent registerSoundEvent() {
+        Identifier id = new Identifier(WindMod.MOD_ID, "wind_sound");
+        WindMod.LOGGER.info("Registering sound event: " + id);
         return Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(id));
     }
 
-    public static void registerSounds() {
-        WindMod.LOGGER.info("Sounds are initialized");
-    }
-
-    public static void playWindSound(World world, PlayerEntity player) {
-        if (player == null) {
-            System.out.println("Player is null, cannot play sound.");
-            return;
+    public static void playSound(SoundEvent WIND_SOUND) {
+        if (MinecraftClient.getInstance().player != null) {
+            WindMod.LOGGER.info("Playing sound: " + WIND_SOUND.getId().toString());
+            assert MinecraftClient.getInstance().world != null;
+            MinecraftClient.getInstance().getSoundManager().play(
+                    new EntityTrackingSoundInstance(WIND_SOUND, SoundCategory.AMBIENT, 1.0F, 1.0F, MinecraftClient.getInstance().player, MinecraftClient.getInstance().world.getRandom().nextLong()));
         }
-
-        float volume = WindManager.calculateWindVolume(world);
-        double x = player.getX();
-        double y = player.getY();
-        double z = player.getZ();
-
-        System.out.println("Attempting to play wind sound at: " + x + ", " + y + ", " + z + " with volume: " + volume);
-        world.playSound(null, x, y, z, WIND_SOUND, SoundCategory.AMBIENT, volume, 1.0f);
-        System.out.println("Wind sound played for player: " + player.getName().getString());
     }
-
 }
