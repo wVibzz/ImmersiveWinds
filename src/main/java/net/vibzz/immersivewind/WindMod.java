@@ -18,7 +18,7 @@ public class WindMod implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Initializing Wind Mod");
 		WindManager.initialize();
-		ModSounds.registerSounds();
+		ModSounds.registerSoundEvent();
 
 		// Register server lifecycle events
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick));
