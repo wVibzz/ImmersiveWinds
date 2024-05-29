@@ -1,14 +1,11 @@
-# Description:
-Immersive Winds is a mod designed to enhance the immersion and quality of life by introducing dynamic wind effects to particle systems within the game. This mod brings a new layer of realism to your Minecraft world.
+# ANNOUCNMENT
+I am planning on adding a full on weather system, I'm talking dynamic rain clouds, weather events, hail, etc.
 
-# Important:
-### This mod is in Alpha and I am working on it everyday!
-##
-### **In the [Particle Rain](https://modrinth.com/mod/particle-rain) config lessen the spawn radius to improve performance, I recommend around 15 or less.**
+although this is a bit away, every new feature takes time, I am a solo dev and this is my first ever mod (thats right). So if you would like to contribute to Issues or to my main code please feel free to do so:
 
-Particle Rain is needed to disable the rendering of Vanilla Weather so that Immersive Winds can affect the Particle Rain and Snow to follow wind paterns.
+[Github Issues](https://github.com/wVibzz/ImmersiveWinds/issues)
 
-- Compatibility: Some particle systems like [Biome Particle Weather](https://modrinth.com/mod/biome_particle_weather) may have unintended performance loss or weird particle movements that will not be correlated to Immersive Winds due to their own logic, please do try these mod out with Immersive Winds as it will still provide a better experience.
+[Github Main Code](https://github.com/wVibzz/ImmersiveWinds)
 
 # Features:
 
@@ -18,16 +15,29 @@ Particle Rain is needed to disable the rendering of Vanilla Weather so that Imme
 
 # Upcoming:
 
-- Combatibility with other particle mods,
-- Better wind physics simulated around Walls and Caves.
+- Combatibility with other particle mods
+- ~~Better wind physics simulated around Walls and Caves.~~ (DONE (Need improvment))
 - Custom wind wisps particles
 - Custom Rain Particles that have direction and magnitude! (OHH YEAH!)
-- Custom Snow Particles so they dont fall in a single block.
+- Custom Snow Particles.
 - This also means removing the dependency of particle rain!
   
 - More to come! If you want to suggest a feature feel free to do so on my [Github Issues](https://github.com/wVibzz/ImmersiveWinds/issues)!
 
-Also thinking of adding weather events (Tornadoes!) But thats a bit away :)
+# Important:
+### This mod is in Alpha and I am working on it (almost) everyday!
+##
+### **In the [Particle Rain](https://modrinth.com/mod/particle-rain) config lessen the spawn radius to improve performance, I recommend around 15 or less.**
+
+Particle Rain is needed to disable the rendering of Vanilla Weather so that Immersive Winds can affect the Particle Rain and Snow to follow wind paterns.
+
+- Compatibility: Some particle systems like [Biome Particle Weather](https://modrinth.com/mod/biome_particle_weather) may have unintended performance loss or weird particle movements that will not be correlated to Immersive Winds due to their own logic, please do try these mod out with Immersive Winds as it will still provide a better experience.
 
 ### Recomended Mods:
-  [AAA Particles](https://modrinth.com/mod/aaa-particles), [Particle Tweaks](https://modrinth.com/mod/particle-tweaks), [Particle Core](https://modrinth.com/mod/particle-core), [Drip Sounds (Fabric)](https://modrinth.com/mod/dripsounds-fabric), [Falling Leaves](https://modrinth.com/mod/fallingleaves), [Biome Particle Weather](https://modrinth.com/mod/biome_particle_weather), [Ambient Sounds](https://modrinth.com/mod/ambientsounds)
+  [AAA Particles](https://modrinth.com/mod/aaa-particles), [Particle Tweaks](https://modrinth.com/mod/particle-tweaks), [Particle Core](https://modrinth.com/mod/particle-core), [Drip Sounds (Fabric)](https://modrinth.com/mod/dripsounds-fabric).
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/8HA4LRnziL8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/1JuKCmcKPUw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/6x4aMT7fXVM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
