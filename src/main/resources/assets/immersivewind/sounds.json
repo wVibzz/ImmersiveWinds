@@ -1,6 +1,6 @@
 {
   "wind_sound": {
-    "subtitle": "sound.windmod.wind_sound",
+    "subtitle": "sound.immersivewind.wind_sound",
     "sounds": [
       {
         "name": "immersivewind:wind_sound",
