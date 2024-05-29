@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.world.World;
+import net.vibzz.immersivewind.sounds.ModSounds;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class WindManager {
 
@@ -18,6 +20,7 @@ public class WindManager {
     private static final float DIRECTION_CHANGE_DISTANCE = 35.0f; // Degrees to increment per step
     private static final float DIRECTION_TOLERANCE = 1.0f; // Degrees within which we directly set the direction
     private static final long STRENGTH_CHANGE_TIME = 8000; // Time in milliseconds over which strength changes
+    private static final long SOUND_UPDATE_INTERVAL = 1000; // Interval to update sound in milliseconds (1 second)
 
     private static volatile int previousWeatherState; // 0 - clear, 1 - rain, 2 - thunder
     private static final LinkedList<WindHistoryEntry> windHistory = new LinkedList<>();
@@ -25,6 +28,7 @@ public class WindManager {
 
     private static long lastWindChangeTime = 0; // To track the last wind change time
     private static long windStrengthChangeStartTime = 0; // To track the start time of strength change
+    private static long lastSoundUpdateTime = 0; // To track the last sound update time
     private static int initialWindStrength = 1; // Initial strength before change
 
     public static void initialize() {
@@ -32,6 +36,7 @@ public class WindManager {
         currentWindDirection = 0.0f; // Set initial direction to North
         currentWindStrength.set(1);  // Set initial Strength to 1
         lastWindChangeTime = System.currentTimeMillis();
+        lastSoundUpdateTime = System.currentTimeMillis();
         System.out.println("Wind is initialized");
     }
 
@@ -56,6 +61,13 @@ public class WindManager {
             lastWindChangeTime = currentTime; // Reset the wind change timer
         }
         interpolateWind();  // Ensure wind direction and strength are being interpolated every update
+
+        if (currentTime - lastSoundUpdateTime >= SOUND_UPDATE_INTERVAL) { // Check for sound update interval
+            for (PlayerEntity player : world.getPlayers()) {
+                ModSounds.playWindSound(player); // Update wind sound for each player
+            }
+            lastSoundUpdateTime = currentTime; // Reset the sound update timer
+        }
     }
 
     public static void updateWindBasedOnWeather(World world) {
@@ -134,11 +146,11 @@ public class WindManager {
         // Wind strength is calculated to follow this scale: "https://www.weather.gov/pqr/wind" up to 45mph or 8/Gale
         // It's not really a perfect 1:1
         if (world.isThundering()) {
-            return random.nextInt(13) + 33; // 33 -> 46
+            return random.nextInt(13) + 23; // 23 -> 36
         } else if (world.isRaining()) {
-            return random.nextInt(22) + 10; // 10 -> 32
+            return random.nextInt(8) + 9; // 9 -> 17
         } else {
-            return random.nextInt(8) + 1;  // 1 -> 9 // world.isClear
+            return random.nextInt(4) + 1;  // 1 -> 5 // world.isClear
         }
     }
 
@@ -150,13 +162,10 @@ public class WindManager {
         }
     }
 
-    public static float calculateWindVolume(World world) {
-        if (world.isThundering()) {
-            return 0.7f; // Max volume
-        } else if (world.isRaining()) {
-            return 0.5f; // Medium volume
-        } else {
-            return 0.2f; // Low volume
-        }
+    public static float calculateWindVolume() {
+        // Calculate volume based on wind strength
+        int strength = currentWindStrength.get();
+        // Normalize strength to a volume level between 0.0 and 1.0
+        return Math.min(1.0f, strength / 36.0f);
     }
 }
