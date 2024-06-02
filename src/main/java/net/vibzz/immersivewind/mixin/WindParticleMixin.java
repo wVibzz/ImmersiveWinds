@@ -8,13 +8,19 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.vibzz.immersivewind.WindManager;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.util.Identifier;
+import net.minecraft.registry.Registries;
+import net.vibzz.immersivewind.ParticleBlacklist;
+import net.vibzz.immersivewind.wind.WindManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.At;
+
+import static net.vibzz.immersivewind.wind.WindMod.LOGGER;
 
 @Mixin(Particle.class)
 public abstract class WindParticleMixin {
@@ -27,12 +33,16 @@ public abstract class WindParticleMixin {
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private double modifyDx(double dx) {
-		Vec3d windEffect = calculateWindEffect();
-		Vec3d particlePos = new Vec3d(this.x, this.y, this.z);
-		Vec3d windDirection = new Vec3d(Math.cos(Math.toRadians(WindManager.getWindDirection())), 0, Math.sin(Math.toRadians(WindManager.getWindDirection())));
+		if (isBlacklisted()) {
+			return dx;
+		} else {
+			Vec3d windEffect = calculateWindEffect();
+			Vec3d particlePos = new Vec3d(this.x, this.y, this.z);
+			Vec3d windDirection = new Vec3d(Math.cos(Math.toRadians(WindManager.getWindDirection())), 0, Math.sin(Math.toRadians(WindManager.getWindDirection())));
 
-		double windInfluenceFactor = getWindInfluenceFactor(particlePos, windDirection);
-		return dx + windEffect.x * windInfluenceFactor;
+			double windInfluenceFactor = getWindInfluenceFactor(particlePos, windDirection);
+			return dx + windEffect.x * windInfluenceFactor;
+		}
 	}
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 1, argsOnly = true)
@@ -42,12 +52,28 @@ public abstract class WindParticleMixin {
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 2, argsOnly = true)
 	private double modifyDz(double dz) {
-		Vec3d windEffect = calculateWindEffect(); // Ensure this method provides the wind vector based on wind direction and strength
-		Vec3d particlePos = new Vec3d(this.x, this.y, this.z);
-		Vec3d windDirection = new Vec3d(Math.cos(Math.toRadians(WindManager.getWindDirection())), 0, Math.sin(Math.toRadians(WindManager.getWindDirection())));
+		if (isBlacklisted()) {
+			return dz;
+		} else {
+			Vec3d windEffect = calculateWindEffect();
+			Vec3d particlePos = new Vec3d(this.x, this.y, this.z);
+			Vec3d windDirection = new Vec3d(Math.cos(Math.toRadians(WindManager.getWindDirection())), 0, Math.sin(Math.toRadians(WindManager.getWindDirection())));
 
-		double windInfluenceFactor = getWindInfluenceFactor(particlePos, windDirection);
-		return dz + windEffect.z * windInfluenceFactor; // Apply wind influence factor to the z-direction
+			double windInfluenceFactor = getWindInfluenceFactor(particlePos, windDirection);
+			return dz + windEffect.z * windInfluenceFactor;
+		}
+	}
+
+	@Unique
+	private boolean isBlacklisted() {
+		if (this instanceof ParticleEffect) {
+			ParticleEffect particleEffect = (ParticleEffect) this;
+			Identifier particleId = Registries.PARTICLE_TYPE.getId(particleEffect.getType());
+			boolean blacklisted = particleId != null && ParticleBlacklist.isBlacklisted(particleId.toString());
+			LOGGER.info("Checking if particle {} is blacklisted: {}", particleId, blacklisted);
+			return blacklisted;
+		}
+		return false;
 	}
 
 	@Unique
