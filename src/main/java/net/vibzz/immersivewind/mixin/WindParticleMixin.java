@@ -33,7 +33,11 @@ public abstract class WindParticleMixin {
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private double modifyDx(double dx) {
-		if (isBlacklisted()) {
+		// Log the particle's class name as a fallback
+		String particleTypeName = this.getClass().getSimpleName();
+		LOGGER.info("Modifying dx for particle: {}", particleTypeName);
+
+		if (isParticleBlacklisted()) {
 			return dx;
 		} else {
 			Vec3d windEffect = calculateWindEffect();
@@ -47,12 +51,12 @@ public abstract class WindParticleMixin {
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 1, argsOnly = true)
 	private double modifyDy(double dy) {
-		return dy;  // Return the adjusted dy
-	}
+        return dy;
+    }
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 2, argsOnly = true)
 	private double modifyDz(double dz) {
-		if (isBlacklisted()) {
+		if (isParticleBlacklisted()) {
 			return dz;
 		} else {
 			Vec3d windEffect = calculateWindEffect();
@@ -65,16 +69,21 @@ public abstract class WindParticleMixin {
 	}
 
 	@Unique
-	private boolean isBlacklisted() {
-		if (this instanceof ParticleEffect) {
-			ParticleEffect particleEffect = (ParticleEffect) this;
-			Identifier particleId = Registries.PARTICLE_TYPE.getId(particleEffect.getType());
-			boolean blacklisted = particleId != null && ParticleBlacklist.isBlacklisted(particleId.toString());
-			LOGGER.info("Checking if particle {} is blacklisted: {}", particleId, blacklisted);
-			return blacklisted;
+	private boolean isParticleBlacklisted() {
+		if (this instanceof ParticleEffect particleEffect) {
+            Identifier particleId = Registries.PARTICLE_TYPE.getId(particleEffect.getType());
+
+			if (particleId != null) {
+				boolean blacklisted = ParticleBlacklist.isBlacklisted(particleId.toString());
+				LOGGER.info("Checking if particle {} is blacklisted: {}", particleId, blacklisted);
+				return blacklisted;
+			} else {
+				LOGGER.info("Particle ID is null");
+			}
 		}
-		return false;
+		return true;
 	}
+
 
 	@Unique
 	private double getWindInfluenceFactor(Vec3d particlePosition, Vec3d windDirection) {
