@@ -1,35 +1,38 @@
 package net.vibzz.immersivewind;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ParticleBlacklist {
+    private static final Logger LOGGER = LogManager.getLogger("ParticleBlacklist");
     private static Set<String> blacklist = new HashSet<>();
 
-    // Get the current blacklist as a list
     public static List<String> getBlacklist() {
-        return blacklist.stream().collect(Collectors.toList());
+        return new ArrayList<>(blacklist);
     }
 
-    // Set the blacklist from a new list of particle names
     public static void setBlacklist(List<String> newBlacklist) {
         blacklist = new HashSet<>(newBlacklist);
+        LOGGER.info("Blacklist set to: {}", blacklist);
     }
 
-    // Add a particle to the blacklist
     public static void addBlacklist(String particleName) {
         blacklist.add(particleName);
+        LOGGER.info("Added to blacklist: {}", particleName);
     }
 
-    // Remove a particle from the blacklist
     public static void removeBlacklist(String particleName) {
         blacklist.remove(particleName);
+        LOGGER.info("Removed from blacklist: {}", particleName);
     }
 
-    // Check if a particle is blacklisted
     public static boolean isBlacklisted(String particleName) {
-        return blacklist.contains(particleName);
+        boolean result = blacklist.contains(particleName);
+        //LOGGER.info("Is {} blacklisted: {}", particleName, result);
+        return result;
     }
 }
