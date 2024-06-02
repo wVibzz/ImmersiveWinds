@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ModMenuIntegration implements ModMenuApi {
 
@@ -32,7 +33,11 @@ public class ModMenuIntegration implements ModMenuApi {
             general.addEntry(builder.entryBuilder()
                     .startBooleanToggle(Text.translatable("Enable Wind Sound"), PlayerWindSoundInstance.enableWind)
                     .setDefaultValue(true)
-                    .setSaveConsumer(newValue -> PlayerWindSoundInstance.enableWind = newValue)
+                    .setSaveConsumer(newValue -> {
+                        if (PlayerWindSoundInstance.enableWind != newValue) {
+                            PlayerWindSoundInstance.enableWind = newValue;
+                        }
+                    })
                     .build());
 
             // Group particles by namespace
@@ -51,12 +56,13 @@ public class ModMenuIntegration implements ModMenuApi {
                     BooleanListEntry toggleEntry = entryBuilder.startBooleanToggle(Text.translatable(particle), isBlacklisted)
                             .setDefaultValue(isBlacklisted)
                             .setSaveConsumer(newValue -> {
-                                if (newValue) {
-                                    ParticleBlacklist.addBlacklist(particle);
-                                    //LOGGER.info("Added particle {} to blacklist", particle);
-                                } else {
-                                    ParticleBlacklist.removeBlacklist(particle);
-                                    //LOGGER.info("Removed particle {} from blacklist", particle);
+                                if (ParticleBlacklist.isBlacklisted(particle) != newValue) {
+                                    if (newValue) {
+                                        ParticleBlacklist.addBlacklist(particle);
+                                    } else {
+                                        ParticleBlacklist.removeBlacklist(particle);
+                                    }
+                                    LOGGER.info("Updated blacklist for particle {}: {}", particle, newValue);
                                 }
                             })
                             .build();
@@ -73,7 +79,7 @@ public class ModMenuIntegration implements ModMenuApi {
         Map<String, List<String>> particlesByNamespace = new HashMap<>();
 
         Registries.PARTICLE_TYPE.stream().forEach(particleType -> {
-            String particleId = Registries.PARTICLE_TYPE.getId(particleType).toString();
+            String particleId = Objects.requireNonNull(Registries.PARTICLE_TYPE.getId(particleType)).toString();
             String namespace = particleId.split(":")[0];
 
             particlesByNamespace.computeIfAbsent(namespace, k -> new java.util.ArrayList<>()).add(particleId);
