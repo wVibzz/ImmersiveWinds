@@ -26,9 +26,9 @@ public class ModMenuIntegration implements ModMenuApi {
         return parent -> {
             ConfigBuilder builder = ConfigBuilder.create()
                     .setParentScreen(parent)
-                    .setTitle(Text.translatable("Immersive Wind"));
+                    .setTitle(Text.translatable("Immersive Wind 0.6"));
 
-            ConfigCategory general = builder.getOrCreateCategory(Text.translatable("category.general"));
+            ConfigCategory general = builder.getOrCreateCategory(Text.translatable("General"));
             general.addEntry(builder.entryBuilder()
                     .startBooleanToggle(Text.translatable("Enable Wind Sound"), PlayerWindSoundInstance.enableWind)
                     .setDefaultValue(true)
@@ -45,7 +45,7 @@ public class ModMenuIntegration implements ModMenuApi {
                 String namespace = entry.getKey();
                 List<String> particles = entry.getValue();
 
-                SubCategoryBuilder subCategoryBuilder = entryBuilder.startSubCategory(Text.translatable(namespace + " Particles"));
+                SubCategoryBuilder subCategoryBuilder = entryBuilder.startSubCategory(Text.translatable(namespace + " Particle Blacklist"));
                 for (String particle : particles) {
                     boolean isBlacklisted = ParticleBlacklist.isBlacklisted(particle);
                     BooleanListEntry toggleEntry = entryBuilder.startBooleanToggle(Text.translatable(particle), isBlacklisted)
@@ -53,10 +53,10 @@ public class ModMenuIntegration implements ModMenuApi {
                             .setSaveConsumer(newValue -> {
                                 if (newValue) {
                                     ParticleBlacklist.addBlacklist(particle);
-                                    LOGGER.info("Added particle {} to blacklist", particle);
+                                    //LOGGER.info("Added particle {} to blacklist", particle);
                                 } else {
                                     ParticleBlacklist.removeBlacklist(particle);
-                                    LOGGER.info("Removed particle {} from blacklist", particle);
+                                    //LOGGER.info("Removed particle {} from blacklist", particle);
                                 }
                             })
                             .build();
