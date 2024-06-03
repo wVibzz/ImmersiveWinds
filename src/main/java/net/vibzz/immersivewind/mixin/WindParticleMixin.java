@@ -77,7 +77,7 @@ public abstract class WindParticleMixin {
 				LOGGER.info("Particle ID is null");
 			}
 		}
-		return true;
+		return false;
 	}
 
 
