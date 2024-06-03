@@ -33,10 +33,6 @@ public abstract class WindParticleMixin {
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private double modifyDx(double dx) {
-		// Log the particle's class name as a fallback
-		String particleTypeName = this.getClass().getSimpleName();
-		LOGGER.info("Modifying dx for particle: {}", particleTypeName);
-
 		if (isParticleBlacklisted()) {
 			return dx;
 		} else {
