@@ -1,5 +1,7 @@
 package net.vibzz.immersivewind;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -13,6 +15,10 @@ import net.vibzz.immersivewind.sounds.PlayerWindSoundInstance;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +27,12 @@ import java.util.Objects;
 public class ModMenuIntegration implements ModMenuApi {
 
     private static final Logger LOGGER = LogManager.getLogger("ModMenuIntegration");
+    private static final Path CONFIG_PATH = Paths.get("config", "immersivewind.json");
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    public ModMenuIntegration() {
+        loadConfig();
+    }
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
@@ -36,6 +48,7 @@ public class ModMenuIntegration implements ModMenuApi {
                     .setSaveConsumer(newValue -> {
                         if (PlayerWindSoundInstance.enableWind != newValue) {
                             PlayerWindSoundInstance.enableWind = newValue;
+                            saveConfig();
                         }
                     })
                     .build());
@@ -63,6 +76,7 @@ public class ModMenuIntegration implements ModMenuApi {
                                         ParticleBlacklist.removeBlacklist(particle);
                                     }
                                     LOGGER.info("Updated blacklist for particle {}: {}", particle, newValue);
+                                    saveConfig();
                                 }
                             })
                             .build();
@@ -73,6 +87,31 @@ public class ModMenuIntegration implements ModMenuApi {
 
             return builder.build();
         };
+    }
+
+    private void loadConfig() {
+        if (Files.exists(CONFIG_PATH)) {
+            try {
+                String json = new String(Files.readAllBytes(CONFIG_PATH));
+                ConfigData configData = GSON.fromJson(json, ConfigData.class);
+                PlayerWindSoundInstance.enableWind = configData.enableWind;
+                ParticleBlacklist.setBlacklist(configData.particleBlacklist);
+            } catch (IOException e) {
+                LOGGER.error("Failed to load config file", e);
+            }
+        }
+    }
+
+    private void saveConfig() {
+        try {
+            ConfigData configData = new ConfigData();
+            configData.enableWind = PlayerWindSoundInstance.enableWind;
+            configData.particleBlacklist = ParticleBlacklist.getBlacklist();
+            String json = GSON.toJson(configData);
+            Files.write(CONFIG_PATH, json.getBytes());
+        } catch (IOException e) {
+            LOGGER.error("Failed to save config file", e);
+        }
     }
 
     private Map<String, List<String>> groupParticlesByNamespace() {
@@ -86,5 +125,10 @@ public class ModMenuIntegration implements ModMenuApi {
         });
 
         return particlesByNamespace;
+    }
+
+    public static class ConfigData {
+        boolean enableWind;
+        List<String> particleBlacklist;
     }
 }
