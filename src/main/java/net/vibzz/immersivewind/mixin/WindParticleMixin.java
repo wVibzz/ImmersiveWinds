@@ -47,8 +47,8 @@ public abstract class WindParticleMixin {
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 1, argsOnly = true)
 	private double modifyDy(double dy) {
-        return dy;
-    }
+		return dy;
+	}
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 2, argsOnly = true)
 	private double modifyDz(double dz) {
@@ -66,7 +66,7 @@ public abstract class WindParticleMixin {
 
 	@Unique
 	private boolean isParticleBlacklisted() {
-		if (this instanceof ParticleEffect particleEffect) {
+		if ((Particle) (Object) this instanceof ParticleEffect particleEffect) {
 			Identifier particleId = Registries.PARTICLE_TYPE.getId(particleEffect.getType());
 
 			if (particleId != null) {
@@ -77,9 +77,8 @@ public abstract class WindParticleMixin {
 				LOGGER.info("Particle ID is null");
 			}
 		}
-		return true;
+		return false;
 	}
-
 
 	@Unique
 	private double getWindInfluenceFactor(Vec3d particlePosition, Vec3d windDirection) {
