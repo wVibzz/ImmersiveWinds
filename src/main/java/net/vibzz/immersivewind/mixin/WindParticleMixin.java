@@ -67,7 +67,7 @@ public abstract class WindParticleMixin {
 	@Unique
 	private boolean isParticleBlacklisted() {
 		if (this instanceof ParticleEffect particleEffect) {
-            Identifier particleId = Registries.PARTICLE_TYPE.getId(particleEffect.getType());
+			Identifier particleId = Registries.PARTICLE_TYPE.getId(particleEffect.getType());
 
 			if (particleId != null) {
 				boolean blacklisted = ParticleBlacklist.isBlacklisted(particleId.toString());
@@ -77,7 +77,7 @@ public abstract class WindParticleMixin {
 				LOGGER.info("Particle ID is null");
 			}
 		}
-		return false;
+		return true;
 	}
 
 
