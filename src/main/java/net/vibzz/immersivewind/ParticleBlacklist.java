@@ -20,19 +20,19 @@ public class ParticleBlacklist {
         LOGGER.info("Blacklist set to: {}", blacklist);
     }
 
-    public static void addBlacklist(String particleName) {
-        blacklist.add(particleName);
-        LOGGER.info("Added to blacklist: {}", particleName);
+    public static void addBlacklist(String particleClassName) {
+        blacklist.add(particleClassName);
+        LOGGER.info("Added to blacklist: {}", particleClassName);
     }
 
-    public static void removeBlacklist(String particleName) {
-        blacklist.remove(particleName);
-        LOGGER.info("Removed from blacklist: {}", particleName);
+    public static void removeBlacklist(String particleClassName) {
+        blacklist.remove(particleClassName);
+        LOGGER.info("Removed from blacklist: {}", particleClassName);
     }
 
-    public static boolean isBlacklisted(String particleName) {
-        boolean result = blacklist.contains(particleName);
-        //LOGGER.info("Is {} blacklisted: {}", particleName, result);
+    public static boolean isBlacklisted(String particleClassName) {
+        boolean result = blacklist.contains(particleClassName);
+        //LOGGER.info("Is {} blacklisted: {}", particleClassName, result);
         return result;
     }
 }

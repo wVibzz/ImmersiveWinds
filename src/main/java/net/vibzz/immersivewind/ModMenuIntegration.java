@@ -62,18 +62,18 @@ public class ModMenuIntegration implements ModMenuApi {
 
                 SubCategoryBuilder subCategoryBuilder = entryBuilder.startSubCategory(Text.translatable(namespace + " Particle Blacklist"));
                 for (String particle : particles) {
-                    String particleId = namespace + ":" + particle;
-                    boolean isBlacklisted = ParticleBlacklist.isBlacklisted(particleId);
+                    String particleClassName = namespace + "." + particle;
+                    boolean isBlacklisted = ParticleBlacklist.isBlacklisted(particleClassName);
                     BooleanListEntry toggleEntry = entryBuilder.startBooleanToggle(Text.translatable(particle), isBlacklisted)
                             .setDefaultValue(isBlacklisted)
                             .setSaveConsumer(newValue -> {
-                                if (ParticleBlacklist.isBlacklisted(particleId) != newValue) {
+                                if (ParticleBlacklist.isBlacklisted(particleClassName) != newValue) {
                                     if (newValue) {
-                                        ParticleBlacklist.addBlacklist(particleId);
+                                        ParticleBlacklist.addBlacklist(particleClassName);
                                     } else {
-                                        ParticleBlacklist.removeBlacklist(particleId);
+                                        ParticleBlacklist.removeBlacklist(particleClassName);
                                     }
-                                    LOGGER.info("Updated blacklist for particle {}: {}", particle, newValue);
+                                    LOGGER.info("Updated blacklist for particle {}: {}", particleClassName, newValue);
                                     saveConfig();
                                 }
                             })
