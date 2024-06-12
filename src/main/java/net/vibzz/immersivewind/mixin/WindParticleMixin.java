@@ -8,9 +8,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registries;
 import net.vibzz.immersivewind.ParticleBlacklist;
 import net.vibzz.immersivewind.wind.WindManager;
 import org.spongepowered.asm.mixin.Final;
@@ -19,7 +16,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.At;
-
 import static net.vibzz.immersivewind.wind.WindMod.LOGGER;
 
 @Mixin(Particle.class)
@@ -34,6 +30,7 @@ public abstract class WindParticleMixin {
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private double modifyDx(double dx) {
 		if (isParticleBlacklisted()) {
+			LOGGER.info("Particle at ({}, {}, {}) is blacklisted, modifying dx", x, y, z);
 			return dx;
 		} else {
 			Vec3d windEffect = calculateWindEffect();
@@ -53,6 +50,7 @@ public abstract class WindParticleMixin {
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 2, argsOnly = true)
 	private double modifyDz(double dz) {
 		if (isParticleBlacklisted()) {
+			LOGGER.info("Particle at ({}, {}, {}) is blacklisted, modifying dz", x, y, z);
 			return dz;
 		} else {
 			Vec3d windEffect = calculateWindEffect();
@@ -66,18 +64,12 @@ public abstract class WindParticleMixin {
 
 	@Unique
 	private boolean isParticleBlacklisted() {
-		if ((Particle) (Object) this instanceof ParticleEffect particleEffect) {
-			Identifier particleId = Registries.PARTICLE_TYPE.getId(particleEffect.getType());
-
-			if (particleId != null) {
-				boolean blacklisted = ParticleBlacklist.isBlacklisted(particleId.toString());
-				LOGGER.info("Checking if particle {} is blacklisted: {}", particleId, blacklisted);
-				return blacklisted;
-			} else {
-				LOGGER.info("Particle ID is null");
-			}
-		}
-		return false;
+		Particle self = (Particle) (Object) this;
+		String particleClassName = self.getClass().getName();
+		LOGGER.info("Checking if particle {} is blacklisted", particleClassName);
+		boolean blacklisted = ParticleBlacklist.isBlacklisted(particleClassName);
+		LOGGER.info("Particle {} blacklisted: {}", particleClassName, blacklisted);
+		return blacklisted;
 	}
 
 	@Unique
