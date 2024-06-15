@@ -1,38 +1,67 @@
 package net.vibzz.immersivewind;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static net.vibzz.immersivewind.wind.WindMod.LOGGER;
 
 public class ParticleBlacklist {
-    private static final Logger LOGGER = LogManager.getLogger("ParticleBlacklist");
-    private static Set<String> blacklist = new HashSet<>();
+    private static final Set<String> BLACKLIST = new HashSet<>();
+    private static final Set<Pattern> BLACKLIST_PATTERNS = new HashSet<>();
+
+    public static boolean isBlacklisted(String particle) {
+        String formattedParticle = formatParticleName(particle);
+        return BLACKLIST_PATTERNS.stream().anyMatch(pattern -> pattern.matcher(formattedParticle).matches());
+    }
+
+    public static void addBlacklist(String particle) {
+        String formattedParticle = formatParticleName(particle);
+        BLACKLIST.add(formattedParticle);
+        BLACKLIST_PATTERNS.add(Pattern.compile(".*" + formattedParticle + ".*", Pattern.CASE_INSENSITIVE));
+    }
+
+    public static void removeBlacklist(String particle) {
+        String formattedParticle = formatParticleName(particle);
+        BLACKLIST.remove(formattedParticle);
+        BLACKLIST_PATTERNS.removeIf(pattern -> pattern.pattern().contains(formattedParticle));
+    }
 
     public static List<String> getBlacklist() {
-        return new ArrayList<>(blacklist);
+        return List.copyOf(BLACKLIST);
     }
 
-    public static void setBlacklist(List<String> newBlacklist) {
-        blacklist = new HashSet<>(newBlacklist);
-        LOGGER.info("Blacklist set to: {}", blacklist);
+    public static void setBlacklist(List<String> blacklist) {
+        BLACKLIST.clear();
+        BLACKLIST_PATTERNS.clear();
+        BLACKLIST.addAll(blacklist);
+        BLACKLIST_PATTERNS.addAll(blacklist.stream()
+                .map(name -> Pattern.compile(".*" + name + ".*", Pattern.CASE_INSENSITIVE))
+                .collect(Collectors.toSet()));
     }
 
-    public static void addBlacklist(String particleClassName) {
-        blacklist.add(particleClassName);
-        LOGGER.info("Added to blacklist: {}", particleClassName);
-    }
+    private static String formatParticleName(String simpleName) {
+        StringBuilder formattedName = new StringBuilder();
+        for (char c : simpleName.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                if (!formattedName.isEmpty()) {
+                    formattedName.append("_");
+                }
+                formattedName.append(Character.toLowerCase(c));
+            } else {
+                formattedName.append(c);
+            }
+        }
+        String result = formattedName.toString();
 
-    public static void removeBlacklist(String particleClassName) {
-        blacklist.remove(particleClassName);
-        LOGGER.info("Removed from blacklist: {}", particleClassName);
-    }
+        // Remove "particle" from the formatted name if it exists
+        if (result.endsWith("_particle")) {
+            result = result.substring(0, result.length() - 9); // Remove the last 9 characters which are "_particle"
+        }
 
-    public static boolean isBlacklisted(String particleClassName) {
-        boolean result = blacklist.contains(particleClassName);
-        //LOGGER.info("Is {} blacklisted: {}", particleClassName, result);
+        //LOGGER.info("{} -> {}", simpleName, result);
         return result;
     }
 }
