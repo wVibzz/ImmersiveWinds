@@ -1,6 +1,3 @@
-# Modrinith Link
-[Modrinith Link](https://modrinth.com/mod/immersive-winds)
-
 # ANNOUCNMENT
 I am planning on adding a full on weather system, I'm talking dynamic rain clouds, weather events, hail, etc.
 
@@ -18,7 +15,7 @@ although this is a bit away, every new feature takes time, I am a solo dev and t
 
 # Upcoming:
 
-- Combatibility with other particle mods
+- ~~Combatibility with other particle mods~~ (DONE 0.6 UPDATE(MAY BE BUGS))
 - ~~Better wind physics simulated around Walls and Caves.~~ (DONE (Need improvment))
 - Custom wind wisps particles
 - Custom Rain Particles that have direction and magnitude! (OHH YEAH!)
