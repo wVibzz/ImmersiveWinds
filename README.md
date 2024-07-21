@@ -5,7 +5,6 @@ although this is a bit away, every new feature takes time, I am a solo dev and t
 
 [Github Issues](https://github.com/wVibzz/ImmersiveWinds/issues)
 
-[Github Main Code](https://github.com/wVibzz/ImmersiveWinds)
 
 # Features:
 
@@ -30,8 +29,3 @@ although this is a bit away, every new feature takes time, I am a solo dev and t
 ### **In the [Particle Rain](https://modrinth.com/mod/particle-rain) config lessen the spawn radius to improve performance, I recommend around 15 or less.**
 
 Particle Rain is needed to disable the rendering of Vanilla Weather so that Immersive Winds can affect the Particle Rain and Snow to follow wind paterns.
-
-- Compatibility: Some particle systems like [Biome Particle Weather](https://modrinth.com/mod/biome_particle_weather) may have unintended performance loss or weird particle movements that will not be correlated to Immersive Winds due to their own logic, please do try these mod out with Immersive Winds as it will still provide a better experience.
-
-### Recomended Mods:
-  [AAA Particles](https://modrinth.com/mod/aaa-particles), [Particle Tweaks](https://modrinth.com/mod/particle-tweaks), [Particle Core](https://modrinth.com/mod/particle-core), [Drip Sounds (Fabric)](https://modrinth.com/mod/dripsounds-fabric).
