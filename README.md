@@ -52,10 +52,3 @@ Please report any bugs: [Github Issues](https://github.com/wVibzz/ImmersiveWinds
 ### **In the [Particle Rain](https://modrinth.com/mod/particle-rain) config lessen the spawn radius to improve performance, I recommend around 15 or less.**
 
 Particle Rain is needed to disable the rendering of Vanilla Weather so that Immersive Winds can affect the Particle Rain and Snow to follow wind paterns.
-
-
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/8HA4LRnziL8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/1JuKCmcKPUw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/6x4aMT7fXVM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
