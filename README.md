@@ -11,15 +11,11 @@
 # ANNOUCNMENT
 Please report any bugs: [Github Issues](https://github.com/wVibzz/ImmersiveWinds/issues)
 ### Update Soon
-- Improved config functionality
+- [Bug fix] Improved config functionality
 - Different wind levels based on dimensions
-- Maybe Custom Wind Particles
-
-### More wind physics
-Updrafts from heat source blocks, lower air will tend to rise and then "cool off"
-This adds in to the nether, as there will be lower wind speeds but more rise and lowering of the air inside.
-
-
+- [Bug fix] Mod only creates config file if ModMenu is installed
+- [Bug fix] Wind sound stops playing after changing dimension.
+- Adding updrafts code base physics to the wind engine.
 
 # Features:
 
@@ -29,16 +25,25 @@ This adds in to the nether, as there will be lower wind speeds but more rise and
 
 # Upcoming:
 
-- ~~Combatibility with other particle mods~~ (DONE 0.6 UPDATE(MAY BE BUGS))
-- ~~Better wind physics simulated around Walls and Caves.~~ (DONE (Need improvment))
+- ~~Better wind physics simulated around Walls and Caves.~~
+- Improved config functionality
+- Different wind levels based on dimensions
+- [Bug fix] Mod only creates config file if ModMenu is installed
+- Updrafts from heat source blocks
+
+
+# Next:
+- New Cloud system
+
+
+# Far out:
+
 - Custom wind particles
 - Custom Rain Particles that have direction and magnitude! (OHH YEAH!)
 - Custom Snow Particles.
-- This also means removing the dependency of particle rain!
-- New Cloud system
 - Localized weather system
 - New weather types
-  
+
 - More to come! If you want to suggest a feature feel free to do so on my [Github Issues](https://github.com/wVibzz/ImmersiveWinds/issues)!
 ##
 # Important:
@@ -47,3 +52,10 @@ This adds in to the nether, as there will be lower wind speeds but more rise and
 ### **In the [Particle Rain](https://modrinth.com/mod/particle-rain) config lessen the spawn radius to improve performance, I recommend around 15 or less.**
 
 Particle Rain is needed to disable the rendering of Vanilla Weather so that Immersive Winds can affect the Particle Rain and Snow to follow wind paterns.
+
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/8HA4LRnziL8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/1JuKCmcKPUw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/6x4aMT7fXVM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
