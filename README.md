@@ -30,6 +30,7 @@ Please report any bugs: [Github Issues](https://github.com/wVibzz/ImmersiveWinds
 - Different wind levels based on dimensions
 - [Bug fix] Mod only creates config file if ModMenu is installed
 - Updrafts from heat source blocks
+- Code basis for more weather types with commands.
 
 
 # Next:
