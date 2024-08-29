@@ -1,0 +1,11 @@
+{
+  "wind_sound": {
+    "subtitle": "sound.immersivewind.wind_sound",
+    "sounds": [
+      {
+        "name": "immersivewind:wind_sound",
+        "stream": true
+      }
+    ]
+  }
+}

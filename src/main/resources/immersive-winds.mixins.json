@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.vibzz.immersivewind.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ServerWorldMixin",
+    "WeatherCommandMixin",
+    "WindParticleMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}
