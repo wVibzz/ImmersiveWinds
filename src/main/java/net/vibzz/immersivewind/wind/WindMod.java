@@ -12,24 +12,27 @@ import org.apache.logging.log4j.Logger;
 public class WindMod implements ModInitializer {
 	public static final String MOD_ID = "immersivewind";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-	public static volatile int tickCount = 0;
+	private int tickCount = 0;
+	private boolean isTickEventRegistered = false;  // New flag to track event registration
 
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Initializing Wind Mod");
 		WindManager.initialize();
-		registerSounds();
-		ModConfig.loadConfig();
-
-		// Register server lifecycle events
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick));
-	}
-
-
-	private void registerSounds() {
 		LOGGER.info("Registering sounds");
 		ModSounds.registerWindSoundTicker();
 		LOGGER.info("Sound Registered: {}", ModSounds.WIND_SOUND);
+		ModConfig.loadConfig();
+		LOGGER.info("Config loaded");
+
+		// Register server lifecycle events
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			if (!isTickEventRegistered) {  // Check if the event is already registered
+				ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
+				isTickEventRegistered = true;  // Set the flag to true after registration
+				LOGGER.info("World tick event registered");
+			}
+		});
 	}
 
 	public void onWorldTick(World world) {
