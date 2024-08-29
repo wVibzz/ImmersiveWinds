@@ -10,12 +10,13 @@
 
 # ANNOUCNMENT
 Please report any bugs: [Github Issues](https://github.com/wVibzz/ImmersiveWinds/issues)
-### Update Soon
+### Update 0.7 Soon
 - [Bug fix] Improved config functionality
 - Different wind levels based on dimensions
 - [Bug fix] Mod only creates config file if ModMenu is installed
 - [Bug fix] Wind sound stops playing after changing dimension.
 - Adding updrafts code base physics to the wind engine.
+- Code basis for more weather types with commands.
 
 # Features:
 
@@ -23,27 +24,20 @@ Please report any bugs: [Github Issues](https://github.com/wVibzz/ImmersiveWinds
   
 - Enhanced Weather Integration: Integrate wind effects seamlessly with existing weather systems. The more severe the weather, the higher the winds!
 
-# Upcoming:
-
-- ~~Better wind physics simulated around Walls and Caves.~~
-- Improved config functionality
-- Different wind levels based on dimensions
-- [Bug fix] Mod only creates config file if ModMenu is installed
-- Updrafts from heat source blocks
-- Code basis for more weather types with commands.
-
-
 # Next:
-- New Cloud system
-
-
-# Far out:
-
+- New Cloud system (not a localized weather system just an asthetic and code basis)
 - Custom wind particles
 - Custom Rain Particles that have direction and magnitude! (OHH YEAH!)
 - Custom Snow Particles.
-- Localized weather system
 - New weather types
+- Seperate Rain weather type into rain or snow
+- Seperate Thunder weather type into rain+thunder or snow+thunder
+
+# Far out:
+- Localized weather system
+- Underwater currents + physics engine for particles and player
+- Tornadoes
+
 
 - More to come! If you want to suggest a feature feel free to do so on my [Github Issues](https://github.com/wVibzz/ImmersiveWinds/issues)!
 ##
