@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.world.World;
 import net.vibzz.immersivewind.sounds.ModSounds;
 import net.minecraft.entity.player.PlayerEntity;
+import static net.vibzz.immersivewind.wind.WindMod.LOGGER;
 
 public class WindManager {
 
@@ -37,7 +38,7 @@ public class WindManager {
         currentWindStrength.set(1);  // Set initial Strength to 1
         lastWindChangeTime = System.currentTimeMillis();
         lastSoundUpdateTime = System.currentTimeMillis();
-        System.out.println("Wind is initialized");
+        LOGGER.info("Wind is initialized");
     }
 
     private static int getCurrentWeatherState(World world) {
@@ -71,12 +72,13 @@ public class WindManager {
     }
 
     public static void updateWindBasedOnWeather(World world) {
+        int newWeather = getCurrentWeatherState(world);
         float newDirection = calculateNewWindDirection();
         int newStrength = calculateNewWindStrength(world);
-        setTargetWind(newDirection, newStrength);
+        setTargetWeather(newWeather, newDirection, newStrength);
     }
 
-    public static void setTargetWind(float direction, int strength) {
+    public static void setTargetWeather(float weather, float direction, int strength) {
         // Record the change of wind direction with its timestamp
         addWindHistoryEntry(currentWindDirection);
 
@@ -85,7 +87,7 @@ public class WindManager {
         initialWindStrength = currentWindStrength.get();
         windStrengthChangeStartTime = System.currentTimeMillis();
 
-        System.out.println("Setting target wind to " + direction + " degrees with strength " + strength);
+        LOGGER.info("Setting Target Weather {} ,Wind Direction: {} ,Wind strength {}",weather, direction, strength);
     }
 
     public static void interpolateWind() {
