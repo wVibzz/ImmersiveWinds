@@ -1,17 +1,29 @@
 package net.vibzz.immersivewind.sounds;
 
 import net.minecraft.client.sound.MovingSoundInstance;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 import net.vibzz.immersivewind.wind.WindManager;
+import static net.vibzz.immersivewind.wind.WindMod.LOGGER;
 
 public class PlayerWindSoundInstance extends MovingSoundInstance {
 
     public static boolean enableWind = true; // Add this line to define the enableWind field
     private final PlayerEntity player;
     private float targetVolume;
+    public void setX(float x) {
+        this.x = x;
+    }
+    public void setY(float y) {
+        this.y = y;
+    }
+    public void setZ(float z) {
+        this.z = z;
+    }
 
     public PlayerWindSoundInstance(PlayerEntity player, SoundEvent soundEvent) {
         super(soundEvent, SoundCategory.AMBIENT, Random.create());
@@ -43,8 +55,13 @@ public class PlayerWindSoundInstance extends MovingSoundInstance {
         this.y = (float) player.getY();
         this.z = (float) player.getZ();
 
-        // Calculate the target volume based on the wind strength
-        this.targetVolume = WindManager.calculateWindVolume();
+        // Update the dimension handling if necessary
+        if (this.player.getWorld().getRegistryKey() == World.OVERWORLD) {
+            // For example, adjust the volume based on dimension
+            this.targetVolume = WindManager.calculateWindVolume();
+        } else {
+            this.targetVolume = 0.1f * WindManager.calculateWindVolume(); // Different wind in other dimensions
+        }
 
         // Interpolate the volume smoothly towards the target volume
         if (Math.abs(this.volume - this.targetVolume) > 0.01) {
