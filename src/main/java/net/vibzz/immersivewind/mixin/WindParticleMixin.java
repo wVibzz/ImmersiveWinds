@@ -32,26 +32,7 @@ public abstract class WindParticleMixin {
 	@Unique
 	private double heatValue = 0.0;
 
-	@Unique
-	private double maxHeatValue = 1.0; // Max heat that can be accumulated
-
-	@Unique
-	private float gravityStrength;
-
-	@Unique
-	private void setPos(double x, double y, double z) {
-		// implementation
-	}
-
-	@Unique
-	private void setMotion(double x, double y, double z) {
-		// implementation
-	}
-
-	@Unique
-	private double maxMotion = 0.1; // adjust this value as needed
-
-	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    @ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private double modifyDx(double dx) {
 		String particleName = ParticleBlacklist.formatParticleName(this.getClass().getSimpleName());
 		if (ParticleBlacklist.isBlacklisted(particleName)) {
@@ -325,7 +306,7 @@ public abstract class WindParticleMixin {
 		BlockPos pos = new BlockPos((int) particlePos.x, (int) particlePos.y, (int) particlePos.z);
 		double maxHeatInfluenceDistance = 5.0;
 		double heatValueIncrement = 0.05;
-		double heatValueDecrement = 0.01;
+		//double heatValueDecrement = 0.01;
 
 		// Reset heat value for the new tick
 		heatValue = 0.0;
@@ -340,7 +321,9 @@ public abstract class WindParticleMixin {
 				if (distance <= maxHeatInfluenceDistance) {
 					double influence = (maxHeatInfluenceDistance - distance) / maxHeatInfluenceDistance;
 					heatValue += heatValueIncrement * influence;
-					heatValue = Math.min(heatValue, maxHeatValue); // Cap the heat value to maxHeatValue
+                    // Max heat that can be accumulated
+                    double maxHeatValue = 1.0;
+                    heatValue = Math.min(heatValue, maxHeatValue); // Cap the heat value to maxHeatValue
 					break; // Break after finding the first heat source for performance
 				}
 			}
