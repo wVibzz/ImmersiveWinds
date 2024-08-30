@@ -1,7 +1,6 @@
 package net.vibzz.immersivewind.sounds;
 
 import net.minecraft.client.sound.MovingSoundInstance;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,15 +14,6 @@ public class PlayerWindSoundInstance extends MovingSoundInstance {
     public static boolean enableWind = true; // Add this line to define the enableWind field
     private final PlayerEntity player;
     private float targetVolume;
-    public void setX(float x) {
-        this.x = x;
-    }
-    public void setY(float y) {
-        this.y = y;
-    }
-    public void setZ(float z) {
-        this.z = z;
-    }
 
     public PlayerWindSoundInstance(PlayerEntity player, SoundEvent soundEvent) {
         super(soundEvent, SoundCategory.AMBIENT, Random.create());
