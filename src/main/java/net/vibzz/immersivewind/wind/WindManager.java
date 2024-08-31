@@ -3,7 +3,13 @@ package net.vibzz.immersivewind.wind;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.vibzz.immersivewind.particle.ModParticles;
 import net.vibzz.immersivewind.sounds.ModSounds;
 import net.minecraft.entity.player.PlayerEntity;
 import static net.vibzz.immersivewind.wind.WindMod.LOGGER;
@@ -32,6 +38,8 @@ public class WindManager {
     private static long lastSoundUpdateTime = 0; // To track the last sound update time
     private static int initialWindStrength = 1; // Initial strength before change
 
+    public static boolean enableWindWisps = false;
+
     public static void initialize() {
         previousWeatherState = -1;
         currentWindDirection = 0.0f; // Set initial direction to North
@@ -39,6 +47,41 @@ public class WindManager {
         lastWindChangeTime = System.currentTimeMillis();
         lastSoundUpdateTime = System.currentTimeMillis();
         LOGGER.info("Wind is initialized");
+    }
+
+    private static boolean isNonSolidBlock(BlockState state) {
+        return state.getFluidState().getFluid() == Fluids.WATER || state.getFluidState().getFluid() == Fluids.LAVA;
+    }
+
+    public static void SpawnWindParticles(World world) {
+        // Ensure that we only spawn particles on the client side.
+        for (PlayerEntity player : world.getPlayers()) {
+
+            // Determine the number of particles to spawn based on wind strength
+            int particleCount = (int) (currentWindStrength.get() * 0.1);
+            if (particleCount == 0) {
+                particleCount = 1;
+            }
+
+            // Get player's position
+            double playerX = player.getX();
+            double playerY = player.getY();
+            double playerZ = player.getZ();
+
+            // Spawn particles around the player
+            Random random = new Random();
+            for (int i = 0; i < particleCount; i++) {
+                double offsetX = random.nextDouble() * 10 - 5; // Random offset between -5 and 5
+                double offsetY = -2 + random.nextDouble() * 10; // Random offset between -2 and 8
+                double offsetZ = random.nextDouble() * 10 - 5; // Random offset between -5 and 5
+
+                // Spawn the particle
+                if (!isNonSolidBlock(world.getBlockState(new BlockPos((int) (playerX + offsetX), (int) (playerY + offsetY), (int) (playerZ + offsetZ))))) {
+                    ParticleManager particleManager = MinecraftClient.getInstance().particleManager;
+                    particleManager.addParticle(ModParticles.WINDWISP_PARTICLE, playerX + offsetX, playerY + offsetY, playerZ + offsetZ, 0, 0, 0);
+                }
+            }
+        }
     }
 
     private static int getCurrentWeatherState(World world) {
@@ -53,21 +96,31 @@ public class WindManager {
 
     public static void updateWeather(World world) {
         long currentTime = System.currentTimeMillis();
-        if (previousWeatherState != getCurrentWeatherState(world)) { // Check for the change in weather
+
+        if (previousWeatherState != getCurrentWeatherState(world)) {
+            // Check for the change in weather
             updateWindBasedOnWeather(world);
             previousWeatherState = getCurrentWeatherState(world); // Remember previous state
             lastWindChangeTime = currentTime; // Reset the wind change timer
-        } else if (currentTime - lastWindChangeTime >= WIND_CHANGE_COOLDOWN) { // Check for the cooldown
+        } else if (currentTime - lastWindChangeTime >= WIND_CHANGE_COOLDOWN) {
+            // Check for the cooldown
             updateWindBasedOnWeather(world);
             lastWindChangeTime = currentTime; // Reset the wind change timer
         }
+
         interpolateWind();  // Ensure wind direction and strength are being interpolated every update
 
-        if (currentTime - lastSoundUpdateTime >= SOUND_UPDATE_INTERVAL) { // Check for sound update interval
+        if (currentTime - lastSoundUpdateTime >= SOUND_UPDATE_INTERVAL) {
             for (PlayerEntity player : world.getPlayers()) {
                 ModSounds.playWindSound(player); // Update wind sound for each player
             }
             lastSoundUpdateTime = currentTime; // Reset the sound update timer
+        }
+
+
+        if (enableWindWisps == true) {
+            // **NEW: Spawn wind particles around the player.**
+            SpawnWindParticles(world);
         }
     }
 

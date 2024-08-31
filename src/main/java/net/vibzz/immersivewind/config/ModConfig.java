@@ -1,8 +1,9 @@
-package net.vibzz.immersivewind;
+package net.vibzz.immersivewind.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.vibzz.immersivewind.sounds.PlayerWindSoundInstance;
+import net.vibzz.immersivewind.wind.WindManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,6 +24,7 @@ public class ModConfig {
                 String json = new String(Files.readAllBytes(CONFIG_PATH));
                 ConfigData configData = GSON.fromJson(json, ConfigData.class);
                 PlayerWindSoundInstance.enableWind = configData.enableWind;
+                WindManager.enableWindWisps = configData.enableWindWisps;
                 ParticleBlacklist.setBlacklist(configData.particleBlacklist);
             } catch (IOException e) {
                 LOGGER.error("Failed to load config file", e);
@@ -37,6 +39,7 @@ public class ModConfig {
         try {
             ConfigData configData = new ConfigData();
             configData.enableWind = PlayerWindSoundInstance.enableWind;
+            configData.enableWindWisps = WindManager.enableWindWisps;
             configData.particleBlacklist = ParticleBlacklist.getBlacklist();
             String json = GSON.toJson(configData);
             Files.write(CONFIG_PATH, json.getBytes());
@@ -47,6 +50,7 @@ public class ModConfig {
 
     public static class ConfigData {
         boolean enableWind = true;
+        boolean enableWindWisps = true;
         List<String> particleBlacklist;
     }
 }

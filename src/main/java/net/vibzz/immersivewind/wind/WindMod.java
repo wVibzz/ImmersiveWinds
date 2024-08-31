@@ -4,7 +4,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.world.World;
-import net.vibzz.immersivewind.ModConfig;
+import net.vibzz.immersivewind.config.ModConfig;
+import net.vibzz.immersivewind.particle.ModParticles;
 import net.vibzz.immersivewind.sounds.ModSounds;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +23,13 @@ public class WindMod implements ModInitializer {
 		LOGGER.info("Registering sounds");
 		ModSounds.registerWindSoundTicker();
 		LOGGER.info("Sound Registered: {}", ModSounds.WIND_SOUND);
+		LOGGER.info("Loading config");
 		ModConfig.loadConfig();
 		LOGGER.info("Config loaded");
+		LOGGER.info("Registering Particles");
+		ModParticles.registerParticles();
+		LOGGER.info("Particle Registered: {}", ModParticles.WINDWISP_PARTICLE);
+		LOGGER.info("Wind Mod initialized");
 
 		// Register server lifecycle events
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {

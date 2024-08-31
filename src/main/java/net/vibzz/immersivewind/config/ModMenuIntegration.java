@@ -1,4 +1,4 @@
-package net.vibzz.immersivewind;
+package net.vibzz.immersivewind.config;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
@@ -10,6 +10,7 @@ import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.minecraft.text.Text;
 import net.minecraft.registry.Registries;
 import net.vibzz.immersivewind.sounds.PlayerWindSoundInstance;
+import net.vibzz.immersivewind.wind.WindManager;
 
 import java.util.*;
 
@@ -29,6 +30,16 @@ public class ModMenuIntegration implements ModMenuApi {
                     .setSaveConsumer(newValue -> {
                         if (PlayerWindSoundInstance.enableWind != newValue) {
                             PlayerWindSoundInstance.enableWind = newValue;
+                            ModConfig.saveConfig();
+                        }
+                    })
+                    .build());
+            general.addEntry(builder.entryBuilder()
+                    .startBooleanToggle(Text.translatable("Enable Wind Particles(Experimental Alpha)"), WindManager.enableWindWisps)
+                    .setDefaultValue(false)
+                    .setSaveConsumer(newValue -> {
+                        if (WindManager.enableWindWisps != newValue) {
+                            WindManager.enableWindWisps = newValue;
                             ModConfig.saveConfig();
                         }
                     })

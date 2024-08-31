@@ -1,4 +1,4 @@
-package net.vibzz.immersivewind;
+package net.vibzz.immersivewind.config;
 
 import java.util.HashSet;
 import java.util.List;
