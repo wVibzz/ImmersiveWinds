@@ -9,14 +9,21 @@
 
 
 # ANNOUCNMENT
+## Update 0.7 is OUT
+### Fixed Bugs!
+- Wind manager breaks after leaving and rejoining a game.
+- Wind Sound shuts off completely after changing dimensions.
+- Blacklist names not lining up with actual particle names
+- IW only creates config file if modmenu is installed
+- Particles were affected in fluids (water) unintentionally
+
 Please report any bugs: [Github Issues](https://github.com/wVibzz/ImmersiveWinds/issues)
-### Update 0.7 Soon
-- [Bug fix] Improved config functionality
-- Different wind levels based on dimensions
-- [Bug fix] Mod only creates config file if ModMenu is installed
-- [Bug fix] Wind sound stops playing after changing dimension.
-- Adding updrafts code base physics to the wind engine.
-- Code basis for more weather types with commands.
+
+### New Features!
+- Wind is now only prevelent in the OverWorld.
+- Nether has a updraft mechanic. Which causes particles to move vertically instead of horizontally.
+- (Experimental) Wind Wisp Particles can now manually be chosen to spawn. Via the config. These are a WIP.
+- Code basis for more weather types. (New weather commands they dont do anything yet)
 
 # Features:
 
@@ -24,9 +31,10 @@ Please report any bugs: [Github Issues](https://github.com/wVibzz/ImmersiveWinds
   
 - Enhanced Weather Integration: Integrate wind effects seamlessly with existing weather systems. The more severe the weather, the higher the winds!
 
-# Next:
-- New Cloud system (not a localized weather system just an asthetic and code basis)
-- Custom wind particles
+# Next update 0.8:
+### NEW WEATHER
+
+Hopefully we pull away from the particle rain dependency this update
 - Custom Rain Particles that have direction and magnitude! (OHH YEAH!)
 - Custom Snow Particles.
 - New weather types
@@ -34,6 +42,7 @@ Please report any bugs: [Github Issues](https://github.com/wVibzz/ImmersiveWinds
 - Seperate Thunder weather type into rain+thunder or snow+thunder
 
 # Far out:
+- New Cloud system (not a localized weather system just an asthetic and code basis)
 - Localized weather system
 - Underwater currents + physics engine for particles and player
 - Tornadoes
@@ -42,8 +51,8 @@ Please report any bugs: [Github Issues](https://github.com/wVibzz/ImmersiveWinds
 - More to come! If you want to suggest a feature feel free to do so on my [Github Issues](https://github.com/wVibzz/ImmersiveWinds/issues)!
 ##
 # Important:
-### This mod is in Alpha and I am working on it (almost) everyday!
+### This mod is in Alpha and I am working on it everyday! (every now and then)
 ##
 ### **In the [Particle Rain](https://modrinth.com/mod/particle-rain) config lessen the spawn radius to improve performance, I recommend around 15 or less.**
 
-Particle Rain is needed to disable the rendering of Vanilla Weather so that Immersive Winds can affect the Particle Rain and Snow to follow wind paterns.
+Particle Rain is needed to disable the rendering of Vanilla Weather so that Immersive Winds can affect the Particle Rain and Snow to follow wind paterns
